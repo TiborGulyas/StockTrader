@@ -79,6 +79,11 @@ public class UTCTimeProvider {
             calOpen.set(Calendar.DAY_OF_WEEK, 6);
             calClose.set(Calendar.WEEK_OF_YEAR, calClose.get(Calendar.WEEK_OF_YEAR)-1);
             calClose.set(Calendar.DAY_OF_WEEK, 6);
+        } else if (dayOfWeek == 2 && today.get(Calendar.HOUR_OF_DAY) <= 15 && today.get(Calendar.MINUTE) <= 30){
+            calOpen.set(Calendar.WEEK_OF_YEAR, calOpen.get(Calendar.WEEK_OF_YEAR)-1);
+            calOpen.set(Calendar.DAY_OF_WEEK, 6);
+            calClose.set(Calendar.WEEK_OF_YEAR, calClose.get(Calendar.WEEK_OF_YEAR)-1);
+            calClose.set(Calendar.DAY_OF_WEEK, 6);
         }
 
         UTCTimeStamps.put("from", calOpen.getTime().getTime()/1000);
