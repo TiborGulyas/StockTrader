@@ -46,6 +46,7 @@ public class StockController {
         String candleAPIToken = "&token="+System.getenv("FINNHUB_TOKEN");
         String candleAPIPath = candleAPIBase+candleAPISymbol+candleAPIResolution+candleAPIFrom+candleAPITo+candleAPIToken;
         JsonObject response = apiCall.getResult(candleAPIPath);
+        System.out.println(response);
         CandleContainer candleReturn = candlePersister.persistCandle(response, symbol, resolution);
         return candleReturn;
 

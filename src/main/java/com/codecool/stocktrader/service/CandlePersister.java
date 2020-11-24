@@ -33,7 +33,7 @@ public class CandlePersister {
         CandleContainer candleContainer = CandleContainer.builder()
                 .symbol(symbol)
                 .resolution(resolutionProvider.createResolution(resolution))
-                .starterTimeStamp(closePrices.get(0).getAsLong())
+                .starterTimeStamp(timeStamps.get(0).getAsLong()*1000)
                 .candleDataList(new ArrayList<>())
                 .build();
 

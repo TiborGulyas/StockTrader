@@ -57,7 +57,7 @@ public class UTCTimeProvider {
         UTCTimeStamps = new HashMap<>();
         Calendar today = Calendar.getInstance();
         int dayOfWeek = today.get(Calendar.DAY_OF_WEEK);
-        //System.out.println("today is:"+dayOfWeek);
+        System.out.println("today is:"+dayOfWeek);
 
         Calendar calOpen = Calendar.getInstance();
         calOpen.set(Calendar.HOUR_OF_DAY,15);
@@ -72,18 +72,25 @@ public class UTCTimeProvider {
         calClose.set(Calendar.MILLISECOND,0);
 
         if (dayOfWeek == 7) {
+            System.out.println("dayofweek7 triggered");
             calOpen.set(Calendar.DAY_OF_WEEK, 6);
             calClose.set(Calendar.DAY_OF_WEEK, 6);
         } else if (dayOfWeek == 1) {
+            System.out.println("dayofweek1 triggered");
             calOpen.set(Calendar.WEEK_OF_YEAR, calOpen.get(Calendar.WEEK_OF_YEAR)-1);
             calOpen.set(Calendar.DAY_OF_WEEK, 6);
             calClose.set(Calendar.WEEK_OF_YEAR, calClose.get(Calendar.WEEK_OF_YEAR)-1);
             calClose.set(Calendar.DAY_OF_WEEK, 6);
-        } else if (dayOfWeek == 2 && today.get(Calendar.HOUR_OF_DAY) <= 15 && today.get(Calendar.MINUTE) <= 30){
+        } else if (dayOfWeek == 2 && today.get(Calendar.HOUR_OF_DAY) == 15 && today.get(Calendar.MINUTE) <= 30 || dayOfWeek == 2 && today.get(Calendar.HOUR_OF_DAY) < 15){
+            System.out.println("dayofweek2 triggered");
             calOpen.set(Calendar.WEEK_OF_YEAR, calOpen.get(Calendar.WEEK_OF_YEAR)-1);
             calOpen.set(Calendar.DAY_OF_WEEK, 6);
             calClose.set(Calendar.WEEK_OF_YEAR, calClose.get(Calendar.WEEK_OF_YEAR)-1);
             calClose.set(Calendar.DAY_OF_WEEK, 6);
+        } else if (today.get(Calendar.HOUR_OF_DAY) == 15 && today.get(Calendar.MINUTE) <= 30 || today.get(Calendar.HOUR_OF_DAY) < 15){
+            System.out.println("dayofweek... triggered");
+            calOpen.set(Calendar.DAY_OF_WEEK, calOpen.get(Calendar.DAY_OF_WEEK)-1);
+            calClose.set(Calendar.DAY_OF_WEEK, calClose.get(Calendar.DAY_OF_WEEK)-1);
         }
 
         UTCTimeStamps.put("from", calOpen.getTime().getTime()/1000);
