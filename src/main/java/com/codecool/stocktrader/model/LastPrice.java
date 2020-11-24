@@ -6,19 +6,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Calendar;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-public class Stock {
+public class LastPrice {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
-    @Column(unique = true, nullable = false)
-    private String symbol;
-    @OneToOne(cascade=CascadeType.ALL)
-    private LastPrice lastPrice;
+
+    float currentPrice;
+    float openPrice;
+    float highPrice;
+    float lowPrice;
+    float previousClosePrice;
+    Date timeOfRetrieval;
 }

@@ -3,7 +3,6 @@ package com.codecool.stocktrader.service;
 import com.codecool.stocktrader.model.CandleContainer;
 import com.codecool.stocktrader.model.CandleData;
 import com.codecool.stocktrader.repository.CandleRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ public class CandlePersister {
     @Autowired
     private CandleRepository candleRepository;
 
-    public CandleContainer persistCandle(JsonObject response, String symbol, String resolution) throws JsonProcessingException {
+    public CandleContainer persistCandle(JsonObject response, String symbol, String resolution) {
         JsonArray closePrices = response.getAsJsonArray("c");
         JsonArray openPrices = response.getAsJsonArray("o");
         JsonArray highPrices = response.getAsJsonArray("h");
