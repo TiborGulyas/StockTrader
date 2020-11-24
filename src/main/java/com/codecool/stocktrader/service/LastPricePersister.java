@@ -7,9 +7,8 @@ import com.codecool.stocktrader.repository.StockRepository;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.Calendar;
-import java.util.Optional;
+
 
 @Component
 public class LastPricePersister {
@@ -38,7 +37,6 @@ public class LastPricePersister {
                 .build();
         long originalLastPriceId;
         if (stock.getLastPrice() != null) {
-            System.out.println("deletinglastprice");
             originalLastPriceId = stock.getLastPrice().getId();
             stock.setLastPrice(lastPriceObj);
             stockRepository.save(stock);
