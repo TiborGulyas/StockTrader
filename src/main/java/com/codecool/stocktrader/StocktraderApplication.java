@@ -1,5 +1,6 @@
 package com.codecool.stocktrader;
 
+import com.codecool.stocktrader.component.DataInitializer;
 import com.codecool.stocktrader.model.Stock;
 import com.codecool.stocktrader.model.StockPurchase;
 import com.codecool.stocktrader.model.UserAccount;
@@ -19,10 +20,7 @@ import java.util.Calendar;
 public class StocktraderApplication {
 
     @Autowired
-    UserAccountRepository userAccountRepository;
-
-    @Autowired
-    private StockRepository stockRepository;
+    private DataInitializer dataInitializer;
 
     public static void main(String[] args) {
         SpringApplication.run(StocktraderApplication.class, args);
@@ -30,44 +28,10 @@ public class StocktraderApplication {
     }
 
     @Bean
-    public CommandLineRunner init(){
+    public CommandLineRunner init() {
         return args -> {
             System.out.println("init persistance");
-            UserAccount userAccount = UserAccount.builder()
-                    .capital(1000000)
-                    .username("Mr.T")
-                    .build();
-            Stock stock = Stock.builder()
-                    .symbol("AAPL")
-                    .name("Apple")
-                    .build();
-            stockRepository.save(stock);
-            Stock savedAAPL = stockRepository.findBySymbol("AAPL");
-            System.out.println(userAccount.toString());
-            StockPurchase stockPurchase = StockPurchase.builder()
-                    .purchaseDate(Calendar.getInstance().getTime())
-                    .stock(savedAAPL)
-                    .purchasePrice(150.23)
-                    .quantity(100)
-                    .userAccount(userAccount)
-                    .build();
-            userAccount.getStockPurchaseList().add(stockPurchase);
-            System.out.println(userAccount.toString());
-            userAccountRepository.save(userAccount);
-
-
-            UserAccount savedUserAccount = userAccountRepository.findByUsername("Mr.T");
-            StockPurchase stockPurchase2 = StockPurchase.builder()
-                    .purchaseDate(Calendar.getInstance().getTime())
-                    .stock(savedAAPL)
-                    .purchasePrice(170.23)
-                    .quantity(200)
-                    .userAccount(savedUserAccount)
-                    .build();
-            savedUserAccount.getStockPurchaseList().add(stockPurchase2);
-            userAccountRepository.save(savedUserAccount);
+            dataInitializer.initData();
         };
-
     }
-
 }

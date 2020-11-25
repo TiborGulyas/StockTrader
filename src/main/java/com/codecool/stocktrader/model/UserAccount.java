@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -27,6 +29,13 @@ public class UserAccount {
 
     @JsonManagedReference
     @Builder.Default
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userAccount", cascade = {CascadeType.ALL})
-    List<StockPurchase> stockPurchaseList = new ArrayList<>();
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "userAccount", cascade = {CascadeType.ALL})
+    List<StockPurchase> portfolio = new ArrayList<>();
+
+    @JsonManagedReference
+    @Builder.Default
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "userAccount", cascade = {CascadeType.ALL})
+    List<Offer> offers = new ArrayList<>();
 }
