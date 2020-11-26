@@ -26,7 +26,7 @@ public class StockPurchase {
     @JsonBackReference
     @ToString.Exclude
     @ManyToOne
-    protected UserAccount userAccount;
+    private UserAccount userAccount;
 
 
 }

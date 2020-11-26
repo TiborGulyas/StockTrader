@@ -1,5 +1,9 @@
-package com.codecool.stocktrader.model;
+package com.codecool.stocktrader.service;
 
+import com.codecool.stocktrader.model.Offer;
+import com.codecool.stocktrader.model.Stock;
+import com.codecool.stocktrader.model.StockPurchase;
+import com.codecool.stocktrader.model.UserAccount;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,20 +47,26 @@ public class TransactionServices {
                 .userAccount(userAccount)
                 .build();
         userAccount.getPortfolio().add(stockPurchase);
-        userAccount.setCapital(userAccount.getCapital()-totalValueOfOffer);
+        userAccount.setCapital(userCapital-totalValueOfOffer);
         userAccount.getOffers().remove(offer);
         userAccountRepository.save(userAccount);
     }
 
-    public void excecuteSalesOffer(List<StockPurchase> stockPurchases, Offer offer){
+    public void excecuteSalesOffer(Offer offer){
         UserAccount userAccount = offer.getUserAccount();
+        List<StockPurchase> stockPurchases = userAccount.getPortfolio();
+        double  totalValueOfOffer = getTotalValueOfOffer(offer);
         int offerQuantity = offer.getQuantity();
-        Iterator<StockPurchase> stockPurchaseIterator = stockPurchases.iterator();
+
+        Iterator<StockPurchase> stockPurchaseIterator = stockPurchases.listIterator();
         while (stockPurchaseIterator.hasNext()) {
             StockPurchase stockPurchase = stockPurchaseIterator.next();
+            System.out.println("next StockPurchase: "+stockPurchase);
             if (stockPurchase.getQuantity() <= offerQuantity){
                 offerQuantity -= stockPurchase.getQuantity();
+                System.out.println("SP before: "+stockPurchases);
                 stockPurchaseIterator.remove();
+                System.out.println("SP after: "+stockPurchases);
                 if (offerQuantity == 0){
                     break;
                 }
@@ -65,11 +75,11 @@ public class TransactionServices {
                 offerQuantity = 0;
                 break;
             }
-
         }
         if (offerQuantity == 0){
             userAccount.setPortfolio(stockPurchases);
             userAccount.getOffers().remove(offer);
+            userAccount.setCapital(userAccount.getCapital()+totalValueOfOffer);
             userAccountRepository.save(userAccount);
         }
     }

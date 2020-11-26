@@ -4,11 +4,9 @@ import com.codecool.stocktrader.model.*;
 import com.codecool.stocktrader.repository.OfferRepository;
 import com.codecool.stocktrader.repository.StockPurchaseRepository;
 import com.codecool.stocktrader.repository.StockRepository;
-import com.codecool.stocktrader.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
 import java.util.List;
 
 @Component
@@ -43,7 +41,7 @@ public class OfferScanner {
                 int offerQuantity = offer.getQuantity();
                 int totalPurchasedQuantity = transactionServices.getTotalQuantityofStocks(stockPurchaseList);
                 if (totalPurchasedQuantity >= offerQuantity){
-                    transactionServices.excecuteSalesOffer(stockPurchaseList, offer);
+                    transactionServices.excecuteSalesOffer(offer);
                 }
             }
 

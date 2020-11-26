@@ -28,5 +28,5 @@ public class Offer {
     @JsonBackReference
     @ToString.Exclude
     @ManyToOne
-    protected UserAccount userAccount;
+    private UserAccount userAccount;
 }
