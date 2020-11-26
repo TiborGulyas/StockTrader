@@ -25,7 +25,7 @@ public class UserAccount {
 
     private String username;
 
-    private int capital;
+    private double capital;
 
     @JsonManagedReference
     @Builder.Default
