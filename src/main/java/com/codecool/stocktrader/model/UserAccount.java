@@ -36,6 +36,6 @@ public class UserAccount {
     @JsonManagedReference
     @Builder.Default
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "userAccount", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "userAccount", cascade = {CascadeType.ALL}, orphanRemoval = true)
     List<Offer> offers = new ArrayList<>();
 }

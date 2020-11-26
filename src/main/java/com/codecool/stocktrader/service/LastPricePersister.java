@@ -19,7 +19,7 @@ public class LastPricePersister {
     @Autowired
     LastPriceRepository lastPriceRepository;
 
-    public Stock persistCurrentPrice(JsonObject response, String symbol){
+    public void persistCurrentPrice(JsonObject response, String symbol){
         float currentPrice = response.getAsJsonPrimitive("c").getAsFloat();
         float openPrice = response.getAsJsonPrimitive("o").getAsFloat();
         float highPrice = response.getAsJsonPrimitive("h").getAsFloat();
@@ -45,6 +45,5 @@ public class LastPricePersister {
             stock.setLastPrice(lastPriceObj);
             stockRepository.save(stock);
         }
-        return stock;
     }
 }

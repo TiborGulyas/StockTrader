@@ -1,6 +1,7 @@
 package com.codecool.stocktrader.model;
 
 public enum Resolution {
-    MIN,
+    MIN1,
+    MIN5,
     DAY
 }

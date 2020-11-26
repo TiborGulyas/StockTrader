@@ -8,7 +8,7 @@ public class UTCTimeProvider {
     private Map<String, Long> UTCTimeStamps;
     public Map<String, Long> provideUTCTimeStamps(String resolution){
         UTCTimeStamps = new HashMap<>();
-        if (resolution.equals("1")){
+        if (resolution.equals("1") || resolution.equals("5")){
             return provideUTCTimeStampsPerMin();
         } else if (resolution.equals("D")){
             return provideUTCTimeStampsPerDay();

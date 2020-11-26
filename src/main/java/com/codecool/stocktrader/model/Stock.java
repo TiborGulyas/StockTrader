@@ -21,4 +21,8 @@ public class Stock {
     private String symbol;
     @OneToOne(cascade=CascadeType.ALL)
     private LastPrice lastPrice;
+    @OneToOne(cascade=CascadeType.ALL)
+    private CandleContainer candleContainer5Min;
+    @OneToOne(cascade=CascadeType.ALL)
+    private CandleContainer candleContainerDay;
 }

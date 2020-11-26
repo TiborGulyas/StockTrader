@@ -1,12 +1,10 @@
 package com.codecool.stocktrader.component;
 
 
-import com.codecool.stocktrader.model.Offer;
-import com.codecool.stocktrader.model.Stock;
-import com.codecool.stocktrader.model.StockPurchase;
-import com.codecool.stocktrader.model.UserAccount;
+import com.codecool.stocktrader.model.*;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
+import com.codecool.stocktrader.service.OfferTypeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +19,9 @@ public class DataInitializer {
     @Autowired
     private StockRepository stockRepository;
 
+    @Autowired
+    private OfferTypeProvider offerTypeProvider;
+
     public void initData(){
         System.out.println("init persistance");
 
@@ -33,6 +34,13 @@ public class DataInitializer {
                 .name("Apple")
                 .build();
         stockRepository.save(stockApple);
+
+        Stock stockTesla = Stock.builder()
+                .symbol("TSLA")
+                .name("Tesla Inc.")
+                .build();
+        stockRepository.save(stockTesla);
+
         Stock savedAAPL = stockRepository.findBySymbol("AAPL");
         System.out.println(userAccount.toString());
         StockPurchase stockPurchase = StockPurchase.builder()
@@ -58,9 +66,12 @@ public class DataInitializer {
         savedUserAccount.getPortfolio().add(stockPurchase2);
         userAccountRepository.save(savedUserAccount);
 
+
+
         UserAccount savedUserAccount2 = userAccountRepository.findByUsername("Mr.T");
         Offer offer = Offer.builder()
                 .offerDate(Calendar.getInstance().getTime())
+                .offerType(offerTypeProvider.createOfferType("BUY"))
                 .price(170.2)
                 .quantity(42)
                 .stock(stockApple)
@@ -68,5 +79,7 @@ public class DataInitializer {
                 .build();
         savedUserAccount2.getOffers().add(offer);
         userAccountRepository.save(savedUserAccount2);
+
+
     }
 }

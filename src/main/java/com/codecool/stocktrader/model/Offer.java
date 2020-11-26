@@ -20,6 +20,9 @@ public class Offer {
     private Stock stock;
     private double price;
     private int quantity;
+
+    @Enumerated(EnumType.STRING)
+    private OfferType offerType;
     private Date offerDate;
 
     @JsonBackReference

@@ -1,6 +1,7 @@
 package com.codecool.stocktrader.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.google.gson.internal.$Gson$Types;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,6 @@ public class CandleContainer {
     private long starterTimeStamp;
 
     @JsonManagedReference
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "candleContainer", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "candleContainer", cascade = {CascadeType.ALL})
     private List<CandleData> candleDataList;
 }
