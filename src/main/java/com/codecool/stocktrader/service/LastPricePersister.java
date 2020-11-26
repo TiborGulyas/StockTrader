@@ -5,6 +5,7 @@ import com.codecool.stocktrader.model.Stock;
 import com.codecool.stocktrader.repository.LastPriceRepository;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.google.gson.JsonObject;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.Calendar;
@@ -20,11 +21,11 @@ public class LastPricePersister {
     LastPriceRepository lastPriceRepository;
 
     public void persistCurrentPrice(JsonObject response, String symbol){
-        float currentPrice = response.getAsJsonPrimitive("c").getAsFloat();
-        float openPrice = response.getAsJsonPrimitive("o").getAsFloat();
-        float highPrice = response.getAsJsonPrimitive("h").getAsFloat();
-        float lowPrice = response.getAsJsonPrimitive("l").getAsFloat();
-        float previousPrice = response.getAsJsonPrimitive("pc").getAsFloat();
+        float currentPrice = NumberRounder.roundFloat(response.getAsJsonPrimitive("c").getAsFloat(), 2);
+        float openPrice =  NumberRounder.roundFloat(response.getAsJsonPrimitive("o").getAsFloat(),2);
+        float highPrice =  NumberRounder.roundFloat(response.getAsJsonPrimitive("h").getAsFloat(),2);
+        float lowPrice =  NumberRounder.roundFloat(response.getAsJsonPrimitive("l").getAsFloat(),2);
+        float previousPrice =  NumberRounder.roundFloat(response.getAsJsonPrimitive("pc").getAsFloat(),2);
         Calendar today = Calendar.getInstance();
         Stock stock = stockRepository.findBySymbol(symbol);
         LastPrice lastPriceObj = LastPrice.builder()

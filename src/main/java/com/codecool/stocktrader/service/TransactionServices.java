@@ -6,6 +6,7 @@ import com.codecool.stocktrader.model.StockPurchase;
 import com.codecool.stocktrader.model.UserAccount;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,17 +31,17 @@ public class TransactionServices {
     }
 
     public double getTotalValueOfOffer(Offer offer){
-        return offer.getQuantity()*offer.getPrice();
+        return  NumberRounder.roundDouble(offer.getQuantity()*offer.getPrice(),2);
     }
 
     public void excecutePurchaseOffer(Offer offer){
         Stock offerStock = offer.getStock();
-        double totalValueOfOffer = getTotalValueOfOffer(offer);
+        double totalValueOfOffer = NumberRounder.roundDouble(getTotalValueOfOffer(offer),2);
         Stock currentMarketStock = stockRepository.findBySymbol(offerStock.getSymbol());
         UserAccount userAccount = offer.getUserAccount();
-        double userCapital = userAccount.getCapital();
+        double userCapital = NumberRounder.roundDouble(userAccount.getCapital(),2);
         StockPurchase stockPurchase = StockPurchase.builder()
-                .purchasePrice(currentMarketStock.getLastPrice().getCurrentPrice())
+                .purchasePrice(NumberRounder.roundDouble(currentMarketStock.getLastPrice().getCurrentPrice(),2))
                 .purchaseDate(currentMarketStock.getLastPrice().getTimeOfRetrieval())
                 .stock(offerStock)
                 .quantity(offer.getQuantity())
@@ -55,18 +56,15 @@ public class TransactionServices {
     public void excecuteSalesOffer(Offer offer){
         UserAccount userAccount = offer.getUserAccount();
         List<StockPurchase> stockPurchases = userAccount.getPortfolio();
-        double  totalValueOfOffer = getTotalValueOfOffer(offer);
+        double  totalValueOfOffer = NumberRounder.roundDouble(getTotalValueOfOffer(offer),2);
         int offerQuantity = offer.getQuantity();
 
         Iterator<StockPurchase> stockPurchaseIterator = stockPurchases.listIterator();
         while (stockPurchaseIterator.hasNext()) {
             StockPurchase stockPurchase = stockPurchaseIterator.next();
-            System.out.println("next StockPurchase: "+stockPurchase);
             if (stockPurchase.getQuantity() <= offerQuantity){
                 offerQuantity -= stockPurchase.getQuantity();
-                System.out.println("SP before: "+stockPurchases);
                 stockPurchaseIterator.remove();
-                System.out.println("SP after: "+stockPurchases);
                 if (offerQuantity == 0){
                     break;
                 }

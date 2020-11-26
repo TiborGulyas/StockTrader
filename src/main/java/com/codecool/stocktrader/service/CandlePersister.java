@@ -1,5 +1,6 @@
 package com.codecool.stocktrader.service;
 
+import com.codecool.stocktrader.component.DataInitializer;
 import com.codecool.stocktrader.model.CandleContainer;
 import com.codecool.stocktrader.model.CandleData;
 import com.codecool.stocktrader.model.Resolution;
@@ -8,8 +9,11 @@ import com.codecool.stocktrader.repository.CandleRepository;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -45,10 +49,10 @@ public class CandlePersister {
                 .build();
 
         for (int i = 0; i < closePrices.size(); i++) {
-            double closePrice = closePrices.get(i).getAsDouble();
-            double openPrice = openPrices.get(i).getAsDouble();
-            double highPrice = highPrices.get(i).getAsDouble();
-            double lowPrice = lowPrices.get(i).getAsDouble();
+            double closePrice = NumberRounder.roundDouble(closePrices.get(i).getAsDouble(),2);
+            double openPrice = NumberRounder.roundDouble(openPrices.get(i).getAsDouble(),2);
+            double highPrice = NumberRounder.roundDouble(highPrices.get(i).getAsDouble(),2);
+            double lowPrice = NumberRounder.roundDouble(lowPrices.get(i).getAsDouble(),2);
             int volume = volumes.get(i).getAsInt();
             long timeStamp = timeStamps.get(i).getAsLong() * 1000;
             Date date = new Date(timeStamp);

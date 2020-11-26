@@ -5,13 +5,17 @@ import com.codecool.stocktrader.model.*;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
 import com.codecool.stocktrader.service.OfferTypeProvider;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 
 @Component
 public class DataInitializer {
+
 
     @Autowired
     UserAccountRepository userAccountRepository;
@@ -26,7 +30,7 @@ public class DataInitializer {
         System.out.println("init persistance");
 
         UserAccount userAccount = UserAccount.builder()
-                .capital(1000000)
+                .capital(Precision.round(1000000,2))
                 .username("Mr.T")
                 .build();
         Stock stockApple = Stock.builder()
@@ -46,7 +50,7 @@ public class DataInitializer {
         StockPurchase stockPurchase = StockPurchase.builder()
                 .purchaseDate(Calendar.getInstance().getTime())
                 .stock(savedAAPL)
-                .purchasePrice(150.23)
+                .purchasePrice(Precision.round(150.23,2))
                 .quantity(100)
                 .userAccount(userAccount)
                 .build();
@@ -59,7 +63,7 @@ public class DataInitializer {
         StockPurchase stockPurchase2 = StockPurchase.builder()
                 .purchaseDate(Calendar.getInstance().getTime())
                 .stock(savedAAPL)
-                .purchasePrice(170.23)
+                .purchasePrice(Precision.round(170.23,2))
                 .quantity(200)
                 .userAccount(savedUserAccount)
                 .build();
@@ -72,7 +76,7 @@ public class DataInitializer {
         Offer offer = Offer.builder()
                 .offerDate(Calendar.getInstance().getTime())
                 .offerType(offerTypeProvider.createOfferType("BUY"))
-                .price(170.2)
+                .price(Precision.round(170.2,2))
                 .quantity(42)
                 .stock(stockApple)
                 .userAccount(savedUserAccount2)

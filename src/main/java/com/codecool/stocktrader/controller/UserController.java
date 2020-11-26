@@ -5,6 +5,7 @@ import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
 import com.codecool.stocktrader.service.OfferScanner;
 import com.codecool.stocktrader.service.OfferTypeProvider;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.Calendar;
@@ -34,7 +35,7 @@ public class UserController {
         Offer offer = Offer.builder()
                 .offerDate(Calendar.getInstance().getTime())
                 .offerType(offerTypeObj)
-                .price(price)
+                .price(Precision.round(price,2))
                 .quantity(quantity)
                 .stock(stock)
                 .userAccount(defaultUserAccount)
