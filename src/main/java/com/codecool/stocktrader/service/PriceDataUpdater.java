@@ -33,6 +33,8 @@ public class PriceDataUpdater {
     @Autowired
     CandlePersister candlePersister;
 
+    @Autowired
+    OfferScanner offerScanner;
 
     @Scheduled(fixedDelay = 30000)
     public void updateLastPrices() throws IOException {
@@ -46,6 +48,7 @@ public class PriceDataUpdater {
             System.out.println("getquote: "+response);
             lastPricePersister.persistCurrentPrice(response, symbol);
         }
+        offerScanner.matchUserOffers();
     }
 
     @Scheduled(fixedDelay = 300000)
