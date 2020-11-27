@@ -25,7 +25,7 @@ public class UserAccount {
 
     private String username;
 
-    private double capital;
+    private double cash;
 
     @JsonManagedReference
     @Builder.Default
@@ -38,4 +38,7 @@ public class UserAccount {
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "userAccount", cascade = {CascadeType.ALL}, orphanRemoval = true)
     List<Offer> offers = new ArrayList<>();
+
+    @OneToOne(cascade= CascadeType.ALL)
+    private PortfolioSummary portfolioSummary;
 }

@@ -5,7 +5,6 @@ import com.codecool.stocktrader.model.Stock;
 import com.codecool.stocktrader.repository.LastPriceRepository;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.google.gson.JsonObject;
-import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.Calendar;

@@ -4,18 +4,15 @@ package com.codecool.stocktrader.component;
 import com.codecool.stocktrader.model.*;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
+import com.codecool.stocktrader.service.NumberRounder;
 import com.codecool.stocktrader.service.OfferTypeProvider;
-import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Calendar;
+import java.util.*;
 
 @Component
 public class DataInitializer {
-
 
     @Autowired
     UserAccountRepository userAccountRepository;
@@ -26,11 +23,13 @@ public class DataInitializer {
     @Autowired
     private OfferTypeProvider offerTypeProvider;
 
+    public static final Map<String, List<Map<String, Long>>> tradeHolidays = new HashMap<>();
+
     public void initData(){
         System.out.println("init persistance");
 
         UserAccount userAccount = UserAccount.builder()
-                .capital(Precision.round(1000000,2))
+                .cash(NumberRounder.roundDouble(1000000,2))
                 .username("Mr.T")
                 .build();
         Stock stockApple = Stock.builder()
@@ -50,7 +49,7 @@ public class DataInitializer {
         StockPurchase stockPurchase = StockPurchase.builder()
                 .purchaseDate(Calendar.getInstance().getTime())
                 .stock(savedAAPL)
-                .purchasePrice(Precision.round(150.23,2))
+                .purchasePrice(NumberRounder.roundDouble(150.23,2))
                 .quantity(100)
                 .userAccount(userAccount)
                 .build();
@@ -63,7 +62,7 @@ public class DataInitializer {
         StockPurchase stockPurchase2 = StockPurchase.builder()
                 .purchaseDate(Calendar.getInstance().getTime())
                 .stock(savedAAPL)
-                .purchasePrice(Precision.round(170.23,2))
+                .purchasePrice(NumberRounder.roundDouble(170.23,2))
                 .quantity(200)
                 .userAccount(savedUserAccount)
                 .build();
@@ -76,7 +75,7 @@ public class DataInitializer {
         Offer offer = Offer.builder()
                 .offerDate(Calendar.getInstance().getTime())
                 .offerType(offerTypeProvider.createOfferType("BUY"))
-                .price(Precision.round(170.2,2))
+                .price(NumberRounder.roundDouble(170.2,2))
                 .quantity(42)
                 .stock(stockApple)
                 .userAccount(savedUserAccount2)
@@ -84,6 +83,30 @@ public class DataInitializer {
         savedUserAccount2.getOffers().add(offer);
         userAccountRepository.save(savedUserAccount2);
 
+        //INIT HOLIDAYS CONTAINER
+        //Map<String, List<Map<String, Long>>> TradeHolidays = new HashMap<>();
 
+        List<Map<String, Long>> holiday2020_11_26 = new ArrayList<>(2);
+        Map<String, Long> holiday2020_11_26_start_end = new HashMap<>();
+        Calendar startDate = Calendar.getInstance();
+        startDate.set(2020,10,26,15,31,0);
+        holiday2020_11_26_start_end.put("start", startDate.getTimeInMillis());
+        Calendar endDate = Calendar.getInstance();
+        endDate.set(2020,10,27,15,30,59);
+        holiday2020_11_26_start_end.put("end", endDate.getTimeInMillis());
+
+        Map<String, Long> UTCTimeStamps = new HashMap<>();
+        Calendar fromDate = Calendar.getInstance();
+        fromDate.set(2020,10,25,15,30,0);
+        UTCTimeStamps.put("from", fromDate.getTimeInMillis()/1000);
+        Calendar toDate = Calendar.getInstance();
+        toDate.set(2020,10,25,22,0, 0);
+        UTCTimeStamps.put("to", toDate.getTimeInMillis()/1000);
+
+        holiday2020_11_26.add(0, holiday2020_11_26_start_end);
+        holiday2020_11_26.add(1,UTCTimeStamps);
+
+        tradeHolidays.put("2020_11_26", holiday2020_11_26);
+        System.out.println(tradeHolidays.toString());
     }
 }

@@ -9,7 +9,6 @@ import com.codecool.stocktrader.repository.CandleRepository;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

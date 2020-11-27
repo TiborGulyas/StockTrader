@@ -1,13 +1,18 @@
 package com.codecool.stocktrader.service;
 
+import com.codecool.stocktrader.component.DataInitializer;
 import org.springframework.stereotype.Component;
+
+import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class UTCTimeProvider {
-    private Map<String, Long> UTCTimeStamps;
+
+    private Map<String, Long> UTCTimeStamps = new HashMap<>();
     public Map<String, Long> provideUTCTimeStamps(String resolution){
-        UTCTimeStamps = new HashMap<>();
         if (resolution.equals("1") || resolution.equals("5")){
             return provideUTCTimeStampsPerMin();
         } else if (resolution.equals("D")){
@@ -54,8 +59,15 @@ public class UTCTimeProvider {
     }
 
     private Map<String, Long> provideUTCTimeStampsPerMin(){
-        UTCTimeStamps = new HashMap<>();
         Calendar today = Calendar.getInstance();
+        for (List<Map<String, Long>> holiday:DataInitializer.tradeHolidays.values()) {
+            System.out.println("today: "+today.getTimeInMillis()+"start: "+holiday.get(0).get("start")+"end: "+holiday.get(0).get("end"));
+            if (today.getTimeInMillis() > holiday.get(0).get("start") && today.getTimeInMillis() < holiday.get(0).get("end")){
+                return holiday.get(1);
+            }
+        }
+
+        UTCTimeStamps = new HashMap<>();
         int dayOfWeek = today.get(Calendar.DAY_OF_WEEK);
         System.out.println("today is:"+dayOfWeek);
 

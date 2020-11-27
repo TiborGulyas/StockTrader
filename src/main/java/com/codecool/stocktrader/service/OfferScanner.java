@@ -32,7 +32,7 @@ public class OfferScanner {
             OfferType offerType = offer.getOfferType();
             Stock currentMarketStock = stockRepository.findBySymbol(offerStock.getSymbol());
             if (offerType == OfferType.BUY && currentMarketStock.getLastPrice().getCurrentPrice() <= offer.getPrice()){
-                if (userAccount.getCapital() >= transactionServices.getTotalValueOfOffer(offer)){
+                if (userAccount.getCash() >= transactionServices.getTotalValueOfOffer(offer)){
                     transactionServices.excecutePurchaseOffer(offer);
                 }
 

@@ -6,7 +6,6 @@ import com.codecool.stocktrader.model.StockPurchase;
 import com.codecool.stocktrader.model.UserAccount;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
-import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +38,7 @@ public class TransactionServices {
         double totalValueOfOffer = NumberRounder.roundDouble(getTotalValueOfOffer(offer),2);
         Stock currentMarketStock = stockRepository.findBySymbol(offerStock.getSymbol());
         UserAccount userAccount = offer.getUserAccount();
-        double userCapital = NumberRounder.roundDouble(userAccount.getCapital(),2);
+        double userCash = NumberRounder.roundDouble(userAccount.getCash(),2);
         StockPurchase stockPurchase = StockPurchase.builder()
                 .purchasePrice(NumberRounder.roundDouble(currentMarketStock.getLastPrice().getCurrentPrice(),2))
                 .purchaseDate(currentMarketStock.getLastPrice().getTimeOfRetrieval())
@@ -48,7 +47,7 @@ public class TransactionServices {
                 .userAccount(userAccount)
                 .build();
         userAccount.getPortfolio().add(stockPurchase);
-        userAccount.setCapital(userCapital-totalValueOfOffer);
+        userAccount.setCash(userCash-totalValueOfOffer);
         userAccount.getOffers().remove(offer);
         userAccountRepository.save(userAccount);
     }
@@ -77,7 +76,7 @@ public class TransactionServices {
         if (offerQuantity == 0){
             userAccount.setPortfolio(stockPurchases);
             userAccount.getOffers().remove(offer);
-            userAccount.setCapital(userAccount.getCapital()+totalValueOfOffer);
+            userAccount.setCash(userAccount.getCash()+totalValueOfOffer);
             userAccountRepository.save(userAccount);
         }
     }
