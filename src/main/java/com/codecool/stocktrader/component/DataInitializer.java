@@ -32,6 +32,8 @@ public class DataInitializer {
                 .cash(NumberRounder.roundDouble(1000000,2))
                 .username("Mr.T")
                 .build();
+
+
         Stock stockApple = Stock.builder()
                 .symbol("AAPL")
                 .name("Apple")
@@ -43,6 +45,36 @@ public class DataInitializer {
                 .name("Tesla Inc.")
                 .build();
         stockRepository.save(stockTesla);
+
+        Stock stockFacebook = Stock.builder()
+                .symbol("FB")
+                .name("Facebook")
+                .build();
+        stockRepository.save(stockFacebook);
+
+        Stock stockGoogle = Stock.builder()
+                .symbol("GOOGL")
+                .name("Alphabet Inc Class A")
+                .build();
+        stockRepository.save(stockGoogle);
+
+        Stock stockNvidia = Stock.builder()
+                .symbol("NVDA")
+                .name("Nvidia")
+                .build();
+        stockRepository.save(stockNvidia);
+
+        Stock stockZoom = Stock.builder()
+                .symbol("ZM")
+                .name("Zoom")
+                .build();
+        stockRepository.save(stockZoom);
+
+        Stock stockBankOfAmerica = Stock.builder()
+                .symbol("BAC")
+                .name("Bank of America Corp")
+                .build();
+        stockRepository.save(stockBankOfAmerica);
 
         Stock savedAAPL = stockRepository.findBySymbol("AAPL");
         System.out.println(userAccount.toString());
