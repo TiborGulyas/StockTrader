@@ -27,7 +27,9 @@ public class LastPricePersister {
         float previousPrice =  NumberRounder.roundFloat(response.getAsJsonPrimitive("pc").getAsFloat(),2);
         Calendar today = Calendar.getInstance();
         Stock stock = stockRepository.findBySymbol(symbol);
-        LastPrice lastPriceObj = LastPrice.builder()
+        /*
+        LastPrice newLastPriceObj = LastPrice.builder()
+                .stock(stock)
                 .currentPrice(currentPrice)
                 .highPrice(highPrice)
                 .lowPrice(lowPrice)
@@ -35,15 +37,31 @@ public class LastPricePersister {
                 .previousClosePrice(previousPrice)
                 .timeOfRetrieval(today.getTime())
                 .build();
-        long originalLastPriceId;
-        if (stock.getLastPrice() != null) {
-            originalLastPriceId = stock.getLastPrice().getId();
-            stock.setLastPrice(lastPriceObj);
-            stockRepository.save(stock);
-            lastPriceRepository.deleteById(originalLastPriceId);
-            } else {
-            stock.setLastPrice(lastPriceObj);
-            stockRepository.save(stock);
+
+         */
+        if (lastPriceRepository.findByStock(stock) == null){
+            LastPrice newLastPriceObj = LastPrice.builder()
+                    .stock(stock)
+                    .currentPrice(currentPrice)
+                    .highPrice(highPrice)
+                    .lowPrice(lowPrice)
+                    .openPrice(openPrice)
+                    .previousClosePrice(previousPrice)
+                    .timeOfRetrieval(today.getTime())
+                    .build();
+            lastPriceRepository.save(newLastPriceObj);
+        } else {
+            LastPrice lastPrice = lastPriceRepository.findByStock(stock);
+            System.out.println("lastPrice retreived: "+lastPrice.toString());
+
+            lastPrice.setPreviousClosePrice(previousPrice);
+            lastPrice.setLowPrice(lowPrice);
+            lastPrice.setHighPrice(highPrice);
+            lastPrice.setOpenPrice(openPrice);
+            lastPrice.setCurrentPrice(currentPrice);
+            lastPrice.setTimeOfRetrieval(today.getTime());
+            lastPrice.setStock(stock);
+            lastPriceRepository.save(lastPrice);
         }
     }
 }

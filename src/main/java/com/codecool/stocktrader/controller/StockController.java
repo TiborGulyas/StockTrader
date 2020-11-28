@@ -2,6 +2,7 @@ package com.codecool.stocktrader.controller;
 
 import com.codecool.stocktrader.model.*;
 import com.codecool.stocktrader.repository.CandleRepository;
+import com.codecool.stocktrader.repository.LastPriceRepository;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.service.NumberRounder;
 import com.codecool.stocktrader.service.ResolutionProvider;
@@ -22,12 +23,15 @@ public class StockController {
     @Autowired
     private ResolutionProvider resolutionProvider;
 
+    @Autowired
+    private LastPriceRepository lastPriceRepository;
+
 
     @GetMapping("/getcandle/{symbol}/{resolution}")
     public ReactCandleContainer returnIntraday(@PathVariable("symbol") String symbol, @PathVariable("resolution") String res) {
-
+        Stock stock = stockRepository.findBySymbol(symbol);
         Resolution resolution = resolutionProvider.createResolution(res);
-        CandleContainer candleReturn = candleRepository.findBySymbolAndResolution(symbol, resolution);
+        CandleContainer candleReturn = candleRepository.findByStockAndResolution(stock, resolution);
 
         //Reformat DATA for React
         ReactCandleContainer reactCandleContainer = new ReactCandleContainer();
@@ -50,8 +54,9 @@ public class StockController {
     }
 
     @GetMapping("/getquote/{symbol}")
-    public Stock returnCurrentPrice(@PathVariable("symbol") String symbol) {
-        return stockRepository.findBySymbol(symbol);
+    public LastPrice returnCurrentPrice(@PathVariable("symbol") String symbol) {
+        Stock stock = stockRepository.findBySymbol(symbol);
+        return lastPriceRepository.findByStock(stock);
     }
 
 

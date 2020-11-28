@@ -29,4 +29,7 @@ public class CandleContainer {
     @JsonManagedReference
     @OneToMany(mappedBy = "candleContainer", cascade = {CascadeType.ALL})
     private List<CandleData> candleDataList;
+
+    @OneToOne
+    Stock stock;
 }

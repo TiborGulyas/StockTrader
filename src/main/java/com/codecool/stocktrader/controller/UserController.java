@@ -3,9 +3,7 @@ package com.codecool.stocktrader.controller;
 import com.codecool.stocktrader.model.*;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
-import com.codecool.stocktrader.service.NumberRounder;
-import com.codecool.stocktrader.service.OfferScanner;
-import com.codecool.stocktrader.service.OfferTypeProvider;
+import com.codecool.stocktrader.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.Calendar;
@@ -26,6 +24,12 @@ public class UserController {
 
     @Autowired
     OfferScanner offerScanner;
+
+    @Autowired
+    StockPerformanceListUpdater stockPerformanceListUpdater;
+
+    @Autowired
+    PortfolioPerformanceUpdater portfolioPerformanceUpdater;
 
     @PostMapping("/placeoffer/{symbol}/{offerType}/{quantity}/{price}")
     public void placeOffer(@PathVariable("symbol") String symbol, @PathVariable("offerType") String offerType, @PathVariable("quantity") int quantity, @PathVariable("price") float price){
@@ -56,5 +60,14 @@ public class UserController {
                 break;
             }
         }
+    }
+
+    @GetMapping("getuseraccount")
+    public UserAccount getUserAccount(){
+        UserAccount defaultUserAccount = userAccountRepository.findByUsername("Mr.T");
+        stockPerformanceListUpdater.updateStockPerformanceList(defaultUserAccount);
+        portfolioPerformanceUpdater.updatePortfolioPerformance(defaultUserAccount);
+
+        return userAccountRepository.findByUsername("Mr.T");
     }
 }

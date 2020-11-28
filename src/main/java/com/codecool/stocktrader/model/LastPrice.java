@@ -18,6 +18,8 @@ public class LastPrice {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @OneToOne
+    Stock stock;
     float currentPrice;
     float openPrice;
     float highPrice;

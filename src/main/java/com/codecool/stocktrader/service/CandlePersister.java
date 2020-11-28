@@ -1,6 +1,5 @@
 package com.codecool.stocktrader.service;
 
-import com.codecool.stocktrader.component.DataInitializer;
 import com.codecool.stocktrader.model.CandleContainer;
 import com.codecool.stocktrader.model.CandleData;
 import com.codecool.stocktrader.model.Resolution;
@@ -12,9 +11,9 @@ import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Date;
+
 
 @Component
 public class CandlePersister {
@@ -29,6 +28,7 @@ public class CandlePersister {
     private StockRepository stockRepository;
 
     public void persistCandle(JsonObject response, String symbol, String res) {
+        CandleContainer candleContainer;
         Stock stock = stockRepository.findBySymbol(symbol);
         Resolution resolution = resolutionProvider.createResolution(res);
 
@@ -40,12 +40,18 @@ public class CandlePersister {
         JsonArray timeStamps = response.getAsJsonArray("t");
 
 
-        CandleContainer candleContainer = CandleContainer.builder()
-                .symbol(symbol)
-                .resolution(resolution)
-                .starterTimeStamp(timeStamps.get(0).getAsLong() * 1000)
-                .candleDataList(new ArrayList<>())
-                .build();
+        if (candleRepository.findByStockAndResolution(stock, resolution) != null){
+            candleContainer = candleRepository.findByStockAndResolution(stock, resolution);
+        } else {
+            candleContainer = CandleContainer.builder()
+                    .symbol(symbol)
+                    .resolution(resolution)
+                    .starterTimeStamp(timeStamps.get(0).getAsLong() * 1000)
+                    .candleDataList(new ArrayList<>())
+                    .stock(stock)
+                    .build();
+        }
+
 
         for (int i = 0; i < closePrices.size(); i++) {
             double closePrice = NumberRounder.roundDouble(closePrices.get(i).getAsDouble(),2);
@@ -68,10 +74,14 @@ public class CandlePersister {
             candleContainer.getCandleDataList().add(candleData);
         }
         System.out.println("candleContainer to be persisted: "+candleContainer.toString());
-        long originalCandleContainerId = 0;
+        candleRepository.save(candleContainer);
 
+        /*
+        long originalCandleContainerId = 0;
         if (resolution == Resolution.MIN5) {
-            if (stock.getCandleContainer5Min() != null) {
+            if (candleRepository.findByStockAndResolution(stock, resolution) != null) {
+                CandleContainer candleContainer = candleRepository.findByStockAndResolution(stock, resolution);
+                List<CandleData> = candleContainer
                 originalCandleContainerId = stock.getCandleContainer5Min().getId();
                 stock.setCandleContainer5Min(candleContainer);
                 stockRepository.save(stock);
@@ -91,7 +101,6 @@ public class CandlePersister {
                 stockRepository.save(stock);
             }
         }
-
-
+        */
     }
 }

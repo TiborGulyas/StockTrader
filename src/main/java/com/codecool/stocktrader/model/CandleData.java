@@ -15,6 +15,7 @@ public class CandleData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private double openPrice;
     private double closePrice;
     private double highPrice;

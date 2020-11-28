@@ -39,6 +39,14 @@ public class UserAccount {
     @OneToMany(mappedBy = "userAccount", cascade = {CascadeType.ALL}, orphanRemoval = true)
     List<Offer> offers = new ArrayList<>();
 
-    @OneToOne(cascade= CascadeType.ALL)
-    private PortfolioSummary portfolioSummary;
+    @JsonManagedReference
+    @Builder.Default
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "userAccount", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    List<StockPerformance> stockPerformanceList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    PortfolioPerformance portfolioPerformance = new PortfolioPerformance();
+
 }

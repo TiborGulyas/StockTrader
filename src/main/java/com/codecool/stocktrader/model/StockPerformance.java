@@ -4,28 +4,29 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-public class StockPurchase {
+public class StockPerformance {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @ManyToOne
     private Stock stock;
-    private double purchasePrice;
-    private int quantity;
-    private Date purchaseDate;
+    private int stockTotalAmount;
+    private double averagePurchasePrice;
+    private double totalPurchaseValue;
+    private double stockCurrentPrice;
+    private double stockCurrentValue;
+    private double stockValueChange;
 
     @JsonBackReference
     @ToString.Exclude
     @ManyToOne
     private UserAccount userAccount;
-
-
 }

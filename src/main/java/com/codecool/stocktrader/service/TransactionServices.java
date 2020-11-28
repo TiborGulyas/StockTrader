@@ -1,9 +1,7 @@
 package com.codecool.stocktrader.service;
 
-import com.codecool.stocktrader.model.Offer;
-import com.codecool.stocktrader.model.Stock;
-import com.codecool.stocktrader.model.StockPurchase;
-import com.codecool.stocktrader.model.UserAccount;
+import com.codecool.stocktrader.model.*;
+import com.codecool.stocktrader.repository.LastPriceRepository;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,9 @@ public class TransactionServices {
     @Autowired
     private StockRepository stockRepository;
 
+    @Autowired
+    private LastPriceRepository lastPriceRepository;
+
 
     public int getTotalQuantityofStocks(List<StockPurchase> stockPurchases){
         int totalQuantity = 0;
@@ -35,48 +36,52 @@ public class TransactionServices {
 
     public void excecutePurchaseOffer(Offer offer){
         Stock offerStock = offer.getStock();
-        double totalValueOfOffer = NumberRounder.roundDouble(getTotalValueOfOffer(offer),2);
-        Stock currentMarketStock = stockRepository.findBySymbol(offerStock.getSymbol());
+        LastPrice lastPrice = lastPriceRepository.findByStock(offerStock);
         UserAccount userAccount = offer.getUserAccount();
-        double userCash = NumberRounder.roundDouble(userAccount.getCash(),2);
+        double userCash = userAccount.getCash();
+        double transactionValue = lastPrice.getCurrentPrice()*offer.getQuantity();
         StockPurchase stockPurchase = StockPurchase.builder()
-                .purchasePrice(NumberRounder.roundDouble(currentMarketStock.getLastPrice().getCurrentPrice(),2))
-                .purchaseDate(currentMarketStock.getLastPrice().getTimeOfRetrieval())
+                .purchasePrice(NumberRounder.roundDouble(lastPrice.getCurrentPrice(),2))
+                .purchaseDate(lastPrice.getTimeOfRetrieval())
                 .stock(offerStock)
                 .quantity(offer.getQuantity())
                 .userAccount(userAccount)
                 .build();
         userAccount.getPortfolio().add(stockPurchase);
-        userAccount.setCash(userCash-totalValueOfOffer);
+        userAccount.setCash(NumberRounder.roundDouble(userCash-transactionValue,2));
         userAccount.getOffers().remove(offer);
         userAccountRepository.save(userAccount);
     }
 
     public void excecuteSalesOffer(Offer offer){
+        Stock offerStock = offer.getStock();
+        LastPrice lastPrice = lastPriceRepository.findByStock(offerStock);
         UserAccount userAccount = offer.getUserAccount();
         List<StockPurchase> stockPurchases = userAccount.getPortfolio();
-        double  totalValueOfOffer = NumberRounder.roundDouble(getTotalValueOfOffer(offer),2);
         int offerQuantity = offer.getQuantity();
+        double  transactionValue = lastPrice.getCurrentPrice()*offerQuantity;
 
         Iterator<StockPurchase> stockPurchaseIterator = stockPurchases.listIterator();
         while (stockPurchaseIterator.hasNext()) {
             StockPurchase stockPurchase = stockPurchaseIterator.next();
-            if (stockPurchase.getQuantity() <= offerQuantity){
-                offerQuantity -= stockPurchase.getQuantity();
-                stockPurchaseIterator.remove();
-                if (offerQuantity == 0){
+            if (stockPurchase.getStock() == offer.getStock()) {
+                if (stockPurchase.getQuantity() <= offerQuantity) {
+                    offerQuantity -= stockPurchase.getQuantity();
+                    stockPurchaseIterator.remove();
+                    if (offerQuantity == 0) {
+                        break;
+                    }
+                } else if (stockPurchase.getQuantity() > offerQuantity) {
+                    stockPurchase.setQuantity(stockPurchase.getQuantity() - offerQuantity);
+                    offerQuantity = 0;
                     break;
                 }
-            } else if (stockPurchase.getQuantity() > offerQuantity){
-                stockPurchase.setQuantity(stockPurchase.getQuantity()-offerQuantity);
-                offerQuantity = 0;
-                break;
             }
         }
         if (offerQuantity == 0){
             userAccount.setPortfolio(stockPurchases);
             userAccount.getOffers().remove(offer);
-            userAccount.setCash(userAccount.getCash()+totalValueOfOffer);
+            userAccount.setCash(NumberRounder.roundDouble(userAccount.getCash()+transactionValue,2));
             userAccountRepository.save(userAccount);
         }
     }
