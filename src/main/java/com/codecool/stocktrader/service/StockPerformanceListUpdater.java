@@ -24,6 +24,7 @@ public class StockPerformanceListUpdater {
     public void updateStockPerformanceList(UserAccount userAccount){
         List<StockPurchase> portfolio = userAccount.getPortfolio();
         List<StockPerformance> stockPerformanceList = userAccount.getStockPerformanceList();
+        stockPerformanceList.clear();
         Set<Stock> stocksPurchased = new HashSet<>();
         for (StockPurchase stockPurchase: portfolio) {
             stocksPurchased.add(stockPurchase.getStock());
@@ -52,6 +53,7 @@ public class StockPerformanceListUpdater {
 
             StockPerformance stockPerformance = StockPerformance.builder()
                     .stock(stock)
+                    .userAccount(userAccount)
                     .stockTotalAmount(totalAmount)
                     .totalPurchaseValue(totalPurchaseValue)
                     .averagePurchasePrice(averagePurchasePrice)
