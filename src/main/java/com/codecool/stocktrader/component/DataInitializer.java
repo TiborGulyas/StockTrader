@@ -86,10 +86,30 @@ public class DataInitializer {
                 .userAccount(userAccount)
                 .build();
         userAccount.getPortfolio().add(stockPurchase);
+
+        StockPurchase stockPurchase2 = StockPurchase.builder()
+                .purchaseDate(Calendar.getInstance().getTime())
+                .stock(savedAAPL)
+                .purchasePrice(NumberRounder.roundDouble(170.23,2))
+                .quantity(200)
+                .userAccount(userAccount)
+                .build();
+        userAccount.getPortfolio().add(stockPurchase2);
+
+        Stock savedTSLA = stockRepository.findBySymbol("TSLA");
+        StockPurchase stockPurchase3 = StockPurchase.builder()
+                .purchaseDate(Calendar.getInstance().getTime())
+                .stock(savedTSLA)
+                .purchasePrice(NumberRounder.roundDouble(250.44,2))
+                .quantity(30)
+                .userAccount(userAccount)
+                .build();
+        userAccount.getPortfolio().add(stockPurchase3);
+
         System.out.println(userAccount.toString());
         userAccountRepository.save(userAccount);
 
-
+        /*
         UserAccount savedUserAccount = userAccountRepository.findByUsername("Mr.T");
         StockPurchase stockPurchase2 = StockPurchase.builder()
                 .purchaseDate(Calendar.getInstance().getTime())
@@ -100,7 +120,7 @@ public class DataInitializer {
                 .build();
         savedUserAccount.getPortfolio().add(stockPurchase2);
         userAccountRepository.save(savedUserAccount);
-
+        */
 
 
         UserAccount savedUserAccount2 = userAccountRepository.findByUsername("Mr.T");
