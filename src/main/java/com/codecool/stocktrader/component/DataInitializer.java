@@ -104,7 +104,7 @@ public class DataInitializer {
 
 
         UserAccount savedUserAccount2 = userAccountRepository.findByUsername("Mr.T");
-        Offer offer = Offer.builder()
+        Offer offerAAPL1 = Offer.builder()
                 .offerDate(Calendar.getInstance().getTime())
                 .offerType(offerTypeProvider.createOfferType("BUY"))
                 .price(NumberRounder.roundDouble(170.2,2))
@@ -112,11 +112,34 @@ public class DataInitializer {
                 .stock(stockApple)
                 .userAccount(savedUserAccount2)
                 .build();
-        savedUserAccount2.getOffers().add(offer);
+        savedUserAccount2.getOffers().add(offerAAPL1);
+
+        Offer offerAAPL2 = Offer.builder()
+                .offerDate(Calendar.getInstance().getTime())
+                .offerType(offerTypeProvider.createOfferType("BUY"))
+                .price(NumberRounder.roundDouble(70.2,2))
+                .quantity(142)
+                .stock(stockApple)
+                .userAccount(savedUserAccount2)
+                .build();
+        savedUserAccount2.getOffers().add(offerAAPL2);
+
+        Offer offerTSLA1 = Offer.builder()
+                .offerDate(Calendar.getInstance().getTime())
+                .offerType(offerTypeProvider.createOfferType("BUY"))
+                .price(NumberRounder.roundDouble(510.2,2))
+                .quantity(15)
+                .stock(stockTesla)
+                .userAccount(savedUserAccount2)
+                .build();
+        savedUserAccount2.getOffers().add(offerTSLA1);
+
         userAccountRepository.save(savedUserAccount2);
 
+
+
+
         //INIT HOLIDAYS CONTAINER
-        //Map<String, List<Map<String, Long>>> TradeHolidays = new HashMap<>();
 
         List<Map<String, Long>> holiday2020_11_26 = new ArrayList<>(2);
         Map<String, Long> holiday2020_11_26_start_end = new HashMap<>();
