@@ -30,6 +30,7 @@ public class DataInitializer {
 
         UserAccount userAccount = UserAccount.builder()
                 .cash(NumberRounder.roundDouble(1000000,2))
+                .cashInvested(NumberRounder.roundDouble(1000000,2))
                 .username("Mr.T")
                 .build();
 

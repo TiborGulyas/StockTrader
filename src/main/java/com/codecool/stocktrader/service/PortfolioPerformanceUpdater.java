@@ -30,20 +30,33 @@ public class PortfolioPerformanceUpdater {
         double totalStockValue = 0;
         double percentageStockValue = 0;
         double percentageCashValue = 0;
+        double currentStockProfit = 0;
+        double investedCashProfit = 0;
+        double percentageCurrentStockProfit = 0;
+        double percentageInvestedCashProfit = 0;
+
 
         for (StockPurchase stockPurchase:portfolio) {
             double currentPrice = lastPriceRepository.findByStock(stockPurchase.getStock()).getCurrentPrice();
             totalStockValue += currentPrice*stockPurchase.getQuantity();
+            currentStockProfit += (currentPrice-stockPurchase.getPurchasePrice())*stockPurchase.getQuantity();
         }
 
         totalValue = userAccount.getCash()+totalStockValue;
-        percentageStockValue = totalStockValue/totalValue;
-        percentageCashValue = userAccount.getCash()/totalValue;
+        percentageStockValue = totalStockValue/totalValue*100;
+        percentageCashValue = userAccount.getCash()/totalValue*100;
+        investedCashProfit = totalValue - userAccount.getCashInvested();
+        percentageCurrentStockProfit = currentStockProfit/totalStockValue*100;
+        percentageInvestedCashProfit = (totalValue/userAccount.getCashInvested()-1)*100;
 
         portfolioPerformance.setPortfolioTotalValue(NumberRounder.roundDouble(totalValue,2));
         portfolioPerformance.setPortfolioTotalStockValue(NumberRounder.roundDouble(totalStockValue,2));
         portfolioPerformance.setPercentageCashValue(NumberRounder.roundDouble(percentageCashValue,2));
         portfolioPerformance.setPercentageStockValue(NumberRounder.roundDouble(percentageStockValue,2));
+        portfolioPerformance.setCurrentStockProfit(NumberRounder.roundDouble(currentStockProfit,2));
+        portfolioPerformance.setInvestedCashProfit(NumberRounder.roundDouble(investedCashProfit,2));
+        portfolioPerformance.setPercentageCurrentStockProfit(NumberRounder.roundDouble(percentageCurrentStockProfit,2));
+        portfolioPerformance.setPercentageInvestedCashProfit(NumberRounder.roundDouble(percentageInvestedCashProfit,2));
         userAccountRepository.save(userAccount);
 
     }

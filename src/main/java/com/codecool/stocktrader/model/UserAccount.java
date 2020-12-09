@@ -26,6 +26,8 @@ public class UserAccount {
     private String username;
 
     private double cash;
+    private double cashInvested;
+
 
     @JsonManagedReference
     @Builder.Default

@@ -21,6 +21,9 @@ public class PortfolioPerformance {
     private double portfolioTotalStockValue = 0;
     private double percentageStockValue = 0;
     private double percentageCashValue = 0;
-
+    private double currentStockProfit = 0;
+    private double investedCashProfit = 0;
+    private double percentageCurrentStockProfit = 0;
+    private double percentageInvestedCashProfit = 0;
 
 }
