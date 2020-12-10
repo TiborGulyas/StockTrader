@@ -20,6 +20,7 @@ public class Offer {
     private Stock stock;
     private double price;
     private int quantity;
+    private double totalValue;
 
     @Enumerated(EnumType.STRING)
     private OfferType offerType;

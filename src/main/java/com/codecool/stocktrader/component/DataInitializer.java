@@ -130,6 +130,7 @@ public class DataInitializer {
                 .offerType(offerTypeProvider.createOfferType("BUY"))
                 .price(NumberRounder.roundDouble(170.2,2))
                 .quantity(42)
+                .totalValue(NumberRounder.roundDouble(170.2*42,2))
                 .stock(stockApple)
                 .userAccount(savedUserAccount2)
                 .build();
@@ -139,7 +140,8 @@ public class DataInitializer {
                 .offerDate(Calendar.getInstance().getTime())
                 .offerType(offerTypeProvider.createOfferType("BUY"))
                 .price(NumberRounder.roundDouble(70.2,2))
-                .quantity(142)
+                .quantity(102)
+                .totalValue(NumberRounder.roundDouble(70.2*102,2))
                 .stock(stockApple)
                 .userAccount(savedUserAccount2)
                 .build();
@@ -150,6 +152,7 @@ public class DataInitializer {
                 .offerType(offerTypeProvider.createOfferType("BUY"))
                 .price(NumberRounder.roundDouble(510.2,2))
                 .quantity(15)
+                .totalValue(510.2*15)
                 .stock(stockTesla)
                 .userAccount(savedUserAccount2)
                 .build();

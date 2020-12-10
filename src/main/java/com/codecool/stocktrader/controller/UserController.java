@@ -1,6 +1,7 @@
 package com.codecool.stocktrader.controller;
 
 import com.codecool.stocktrader.model.*;
+import com.codecool.stocktrader.repository.OfferRepository;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
 import com.codecool.stocktrader.service.*;
@@ -20,6 +21,9 @@ public class UserController {
     private UserAccountRepository userAccountRepository;
 
     @Autowired
+    private OfferRepository offerRepository;
+
+    @Autowired
     private OfferTypeProvider offerTypeProvider;
 
     @Autowired
@@ -31,23 +35,103 @@ public class UserController {
     @Autowired
     PortfolioPerformanceUpdater portfolioPerformanceUpdater;
 
+    @Autowired
+    PortfolioAvailableStockQuantityProvider portfolioAvailableStockQuantityProvider;
+
+    @Autowired
+    PortfolioAvailableCashForPurchaseProvider portfolioAvailableCashForPurchaseProvider;
+
     @PostMapping("/placeoffer/{symbol}/{offerType}/{quantity}/{price}")
-    public void placeOffer(@PathVariable("symbol") String symbol, @PathVariable("offerType") String offerType, @PathVariable("quantity") int quantity, @PathVariable("price") float price){
-        UserAccount defaultUserAccount = userAccountRepository.findByUsername("Mr.T");
+    public String placeOffer(@PathVariable("symbol") String symbol, @PathVariable("offerType") String offerType, @PathVariable("quantity") int quantity, @PathVariable("price") float price){
+        boolean approvalQuantity = false;
+        boolean approvalCash = false;
+        double newOfferTotalValue = price*quantity;
+        UserAccount userAccount = userAccountRepository.findByUsername("Mr.T");
         Stock stock = stockRepository.findBySymbol(symbol);
         OfferType offerTypeObj = offerTypeProvider.createOfferType(offerType);
-        Offer offer = Offer.builder()
-                .offerDate(Calendar.getInstance().getTime())
-                .offerType(offerTypeObj)
-                .price(NumberRounder.roundFloat(price,2))
-                .quantity(quantity)
-                .stock(stock)
-                .userAccount(defaultUserAccount)
-                .build();
-        defaultUserAccount.getOffers().add(offer);
-        userAccountRepository.save(defaultUserAccount);
-        offerScanner.matchUserOffers();
+
+        //in case of SELL: QUANTITY CHECK
+        if (offerTypeObj == OfferType.SELL){
+            int stockAvailable = portfolioAvailableStockQuantityProvider.providePortfolioStockQuantity(userAccount, stock);
+            if ( stockAvailable >= quantity){
+                approvalQuantity = true;
+            } else {
+                return "ERROR! Stock available: "+stockAvailable+" pcs; Stock requested to sell: "+quantity+" pcs.";
+            }
+            approvalCash = true;
+
+        } else if (offerTypeObj == OfferType.BUY){
+            double cashAvailable = portfolioAvailableCashForPurchaseProvider.providePortfolioAvailableCashForPurchase(userAccount);
+            if (cashAvailable >= newOfferTotalValue){
+                approvalCash = true;
+            } else {
+                return "ERROR! Cash available: $ "+cashAvailable+"; Stock value requested to buy: $ "+newOfferTotalValue+".";
+            }
+            approvalQuantity = true;
+        }
+
+        if (approvalQuantity && approvalCash){
+            Offer offer = Offer.builder()
+                    .offerDate(Calendar.getInstance().getTime())
+                    .offerType(offerTypeObj)
+                    .price(NumberRounder.roundFloat(price,2))
+                    .quantity(quantity)
+                    .totalValue(quantity*price)
+                    .stock(stock)
+                    .userAccount(userAccount)
+                    .build();
+            userAccount.getOffers().add(offer);
+            userAccountRepository.save(userAccount);
+            offerScanner.matchUserOffers();
+        }
+        return "OK";
     }
+
+    @PostMapping("/replaceoffer/{id}/{symbol}/{offerType}/{quantity}/{price}")
+    public String replaceOffer(@PathVariable("id") Long id, @PathVariable("symbol") String symbol, @PathVariable("offerType") String offerType, @PathVariable("quantity") int quantity, @PathVariable("price") float price){
+        boolean approvalQuantity = false;
+        boolean approvalCash = false;
+        double newOfferTotalValue = price*quantity;
+        UserAccount userAccount = userAccountRepository.findByUsername("Mr.T");
+        OfferType newOfferType = offerTypeProvider.createOfferType(offerType);
+        Stock stock = stockRepository.findBySymbol(symbol);
+        Offer offer = offerRepository.getOne(id);
+        double originalOfferTotalValue = offer.getTotalValue();
+        double originalOfferQuantity = offer.getQuantity();
+
+        //in case of SELL: QUANTITY CHECK
+        if (newOfferType == OfferType.SELL){
+            double stockAvailable = portfolioAvailableStockQuantityProvider.providePortfolioStockQuantity(userAccount, stock)+originalOfferQuantity;
+            if (stockAvailable >= quantity){
+                approvalQuantity = true;
+            } else {
+                return "ERROR! Stock available: "+stockAvailable+" pcs; Stock requested to sell: "+quantity+" pcs.";
+            }
+            approvalCash = true;
+        } else if (newOfferType == OfferType.BUY){
+            double cashAvailable = portfolioAvailableCashForPurchaseProvider.providePortfolioAvailableCashForPurchase(userAccount) + originalOfferTotalValue;
+            if (cashAvailable >= newOfferTotalValue){
+                approvalCash = true;
+            } else {
+                return "ERROR! Cash available: $ "+cashAvailable+"; Stock value requested to buy: $ "+newOfferTotalValue+".";
+            }
+            approvalQuantity = true;
+        }
+
+        if (approvalQuantity && approvalCash) {
+            if (offer.getStock().getSymbol().equals(symbol)) {
+                offer.setOfferType(newOfferType);
+                offer.setPrice(price);
+                offer.setQuantity(quantity);
+                offer.setTotalValue(quantity*price);
+                offer.setOfferDate(Calendar.getInstance().getTime());
+            }
+            offerRepository.save(offer);
+            offerScanner.matchUserOffers();
+        }
+        return "OK";
+    }
+
 
     @DeleteMapping("/deleteoffer/{id}")
     public void deleteOffer(@PathVariable("id") long id){
