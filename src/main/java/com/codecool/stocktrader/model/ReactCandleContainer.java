@@ -15,4 +15,6 @@ import java.util.List;
 @Builder
 public class ReactCandleContainer {
     private List<ReactCandleData> reactCandleDataList = new ArrayList<>();
+    private List<ReactVolumeData> reactVolumeDataList = new ArrayList<>();
+
 }

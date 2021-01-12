@@ -47,7 +47,14 @@ public class StockController {
                     .x(candleData.getDate())
                     .y(candlePrices)
                     .build();
+
+            ReactVolumeData reactVolumeData = ReactVolumeData.builder()
+                    .x(candleData.getDate())
+                    .volume(candleData.getVolume())
+                    .build();
+
             reactCandleContainer.getReactCandleDataList().add(reactCandleData);
+            reactCandleContainer.getReactVolumeDataList().add(reactVolumeData);
         }
         return reactCandleContainer;
 
