@@ -19,7 +19,7 @@ public class ReactCandleDataConverter {
             candlePrices[3] = NumberRounder.roundDouble(candleData.getClosePrice(),2);
 
             ReactCandleData reactCandleData = ReactCandleData.builder()
-                    //.x(candleData.getDate())
+                    .x(candleData.getDate())
                     //.x((double) candleData.getDate().getTime())
                     .y(candlePrices)
                     .build();
