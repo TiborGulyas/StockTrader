@@ -51,6 +51,22 @@ public class PriceDataUpdater {
         offerScanner.matchUserOffers();
     }
 
+
+    @Scheduled(fixedDelay = 60000)
+    public void updateCandlesMin1() throws IOException {
+        System.out.println("candle min1 updater running");
+        List<Stock> stocks = stockRepository.findAll();
+        for (Stock stock : stocks) {
+            String symbol = stock.getSymbol();
+            String currentPricePathMIN1 = apiStringProvider.provideApiStringForCandle(symbol, resolution1min);
+            System.out.println("currentPricePath: " + currentPricePathMIN1);
+            JsonObject response = apiCall.getResult(currentPricePathMIN1);
+            System.out.println("getcandle: " + response);
+            candlePersister.persistCandle(response, symbol, resolution1min);
+
+        }
+    }
+
     @Scheduled(fixedDelay = 300000)
     public void updateCandlesMin5() throws IOException {
         System.out.println("candle min5 updater running");

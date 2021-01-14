@@ -12,6 +12,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class ReactVolumeData {
-    private Date x;
-    private int volume;
+    private Double[] x;
+    //private Double[] y;
 }

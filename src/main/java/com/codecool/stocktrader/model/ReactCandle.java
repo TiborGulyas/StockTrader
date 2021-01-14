@@ -1,6 +1,5 @@
 package com.codecool.stocktrader.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ReactCandleContainer {
-    private ReactCandle reactCandle1 = new ReactCandle();
-    private ReactCandle reactCandle5 = new ReactCandle();
-    private ReactCandle reactCandleD = new ReactCandle();
-
-
-
+public class ReactCandle {
+    private List<ReactCandleData> reactCandleDataList = new ArrayList<>();
+    private List<List<Double>> reactVolumeDataList = new ArrayList<>();
 }

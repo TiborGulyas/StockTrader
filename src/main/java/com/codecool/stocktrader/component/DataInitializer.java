@@ -41,6 +41,7 @@ public class DataInitializer {
                 .build();
         stockRepository.save(stockApple);
 
+        /*
         Stock stockTesla = Stock.builder()
                 .symbol("TSLA")
                 .name("Tesla Inc.")
@@ -77,6 +78,8 @@ public class DataInitializer {
                 .build();
         stockRepository.save(stockBankOfAmerica);
 
+         */
+
         Stock savedAAPL = stockRepository.findBySymbol("AAPL");
         System.out.println(userAccount.toString());
         StockPurchase stockPurchase = StockPurchase.builder()
@@ -97,6 +100,7 @@ public class DataInitializer {
                 .build();
         userAccount.getPortfolio().add(stockPurchase2);
 
+        /*
         Stock savedTSLA = stockRepository.findBySymbol("TSLA");
         StockPurchase stockPurchase3 = StockPurchase.builder()
                 .purchaseDate(Calendar.getInstance().getTime())
@@ -106,7 +110,7 @@ public class DataInitializer {
                 .userAccount(userAccount)
                 .build();
         userAccount.getPortfolio().add(stockPurchase3);
-
+        */
         System.out.println(userAccount.toString());
         userAccountRepository.save(userAccount);
 
@@ -147,6 +151,7 @@ public class DataInitializer {
                 .build();
         savedUserAccount2.getOffers().add(offerAAPL2);
 
+        /*
         Offer offerTSLA1 = Offer.builder()
                 .offerDate(Calendar.getInstance().getTime())
                 .offerType(offerTypeProvider.createOfferType("BUY"))
@@ -157,6 +162,8 @@ public class DataInitializer {
                 .userAccount(savedUserAccount2)
                 .build();
         savedUserAccount2.getOffers().add(offerTSLA1);
+
+         */
 
         userAccountRepository.save(savedUserAccount2);
 

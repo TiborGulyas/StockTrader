@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class ReactCandleData {
-    private Date x;
+    private double x;
     private Double[] y;
 
 }

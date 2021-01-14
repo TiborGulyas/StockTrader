@@ -26,8 +26,9 @@ public class CandleContainer {
     private Resolution resolution;
     private long starterTimeStamp;
 
+    //mappedBy = "candleContainer"
     @JsonManagedReference
-    @OneToMany(mappedBy = "candleContainer", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "candleContainer", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<CandleData> candleDataList;
 
     @OneToOne

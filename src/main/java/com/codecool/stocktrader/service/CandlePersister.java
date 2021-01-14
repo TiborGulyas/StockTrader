@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -27,6 +28,7 @@ public class CandlePersister {
     @Autowired
     private StockRepository stockRepository;
 
+
     public void persistCandle(JsonObject response, String symbol, String res) {
         CandleContainer candleContainer;
         Stock stock = stockRepository.findBySymbol(symbol);
@@ -40,8 +42,12 @@ public class CandlePersister {
         JsonArray timeStamps = response.getAsJsonArray("t");
 
 
-        if (candleRepository.findByStockAndResolution(stock, resolution) != null){
-            candleContainer = candleRepository.findByStockAndResolution(stock, resolution);
+        if (candleRepository.findAllByStockAndResolution(stock, resolution) != null){
+            candleContainer = candleRepository.findAllByStockAndResolution(stock, resolution);
+            candleRepository.delete(candleContainer);
+            candleContainer.getCandleDataList().clear();
+            candleContainer.setStarterTimeStamp(timeStamps.get(0).getAsLong() * 1000);
+            //candleRepository.deleteCandleContainerById(candleContainer.getId());
         } else {
             candleContainer = CandleContainer.builder()
                     .symbol(symbol)
@@ -74,6 +80,7 @@ public class CandlePersister {
             candleContainer.getCandleDataList().add(candleData);
         }
         System.out.println("candleContainer to be persisted: "+candleContainer.toString());
+
         candleRepository.save(candleContainer);
 
         /*
