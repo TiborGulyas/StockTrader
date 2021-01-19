@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -47,7 +49,7 @@ public class UserController {
         boolean approvalQuantity = false;
         boolean approvalCash = false;
         double newOfferTotalValue = price*quantity;
-        UserAccount userAccount = userAccountRepository.findByUsername("Mr.T");
+        UserAccount userAccount = userAccountRepository.findByNickName("Mr.T");
         Stock stock = stockRepository.findBySymbol(symbol);
         OfferType offerTypeObj = offerTypeProvider.createOfferType(offerType);
 
@@ -93,7 +95,7 @@ public class UserController {
         boolean approvalQuantity = false;
         boolean approvalCash = false;
         double newOfferTotalValue = price*quantity;
-        UserAccount userAccount = userAccountRepository.findByUsername("Mr.T");
+        UserAccount userAccount = userAccountRepository.findByNickName("Mr.T");
         OfferType newOfferType = offerTypeProvider.createOfferType(offerType);
         Stock stock = stockRepository.findBySymbol(symbol);
         Offer offer = offerRepository.getOne(id);
@@ -136,7 +138,7 @@ public class UserController {
 
     @DeleteMapping("/deleteoffer/{id}")
     public void deleteOffer(@PathVariable("id") long id){
-        UserAccount defaultUserAccount = userAccountRepository.findByUsername("Mr.T");
+        UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
         List<Offer> userOffers = defaultUserAccount.getOffers();
         for (Offer offer: userOffers) {
             if (offer.getId() == id){
@@ -149,12 +151,45 @@ public class UserController {
 
     @GetMapping("getuseraccount")
     public UserAccount getUserAccount(){
-        UserAccount defaultUserAccount = userAccountRepository.findByUsername("Mr.T");
+        UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
         stockPerformanceListUpdater.updateStockPerformanceList(defaultUserAccount);
         portfolioPerformanceUpdater.updatePortfolioPerformance(defaultUserAccount);
 
-        return userAccountRepository.findByUsername("Mr.T");
+        return userAccountRepository.findByNickName("Mr.T");
     }
 
+    @GetMapping("getalloffers")
+    public List<Offer> getAllOffers(){
+        UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
+        return defaultUserAccount.getOffers();
+    }
+
+    @GetMapping("getoffers/{stock}")
+    public List<Offer> getOffersPerStock(@PathVariable("stock") String stock){
+        UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
+        return defaultUserAccount.getOffers().stream().filter(offer -> offer.getStock().getSymbol().equals(stock)).collect(Collectors.toList());
+    }
+
+    @GetMapping("getStockPerformanceList")
+    public List<StockPerformance> getStockPerformanceList(){
+        UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
+        stockPerformanceListUpdater.updateStockPerformanceList(defaultUserAccount);
+        return userAccountRepository.findByNickName("Mr.T").getStockPerformanceList();
+    }
+
+    @GetMapping("getStockPerformanceList/{stock}")
+    public Optional<StockPerformance> getStockPerformanceListPerStock(@PathVariable("stock") String stock){
+        UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
+        stockPerformanceListUpdater.updateStockPerformanceList(defaultUserAccount);
+        return userAccountRepository.findByNickName("Mr.T").getStockPerformanceList().stream().filter(stockPerformance -> stockPerformance.getStock().getSymbol().equals(stock)).findFirst();
+    }
+
+
+    @GetMapping("getportfolioperformance")
+    public PortfolioPerformance getPortfolioPerformance(){
+        UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
+        portfolioPerformanceUpdater.updatePortfolioPerformance(defaultUserAccount);
+        return userAccountRepository.findByNickName("Mr.T").getPortfolioPerformance();
+    }
 
 }
