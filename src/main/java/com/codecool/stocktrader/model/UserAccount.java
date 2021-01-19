@@ -10,6 +10,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -23,6 +24,9 @@ public class UserAccount {
     private Long id;
 
     private String username;
+    private String nickName;
+    private String profilePic;
+    private Date dateOfRegistration;
 
     private double cash;
     private double cashInvested;
