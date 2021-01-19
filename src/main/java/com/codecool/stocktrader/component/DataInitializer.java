@@ -193,6 +193,55 @@ public class DataInitializer {
         holiday2020_11_26.add(1,UTCTimeStamps);
 
         tradeHolidays.put("2020_11_26", holiday2020_11_26);
+
+
+        List<Map<String, Long>> holiday2021_01_18 = new ArrayList<>(2);
+        Map<String, Long> holiday2021_01_18_start_end = new HashMap<>();
+        Calendar startDate2021_01_18 = Calendar.getInstance();
+        startDate2021_01_18.set(2021,0,18,15,31,0);
+        holiday2021_01_18_start_end.put("start", startDate2021_01_18.getTimeInMillis());
+        Calendar endDate2021_01_18 = Calendar.getInstance();
+        endDate2021_01_18.set(2021,0,19,15,30,59);
+        holiday2021_01_18_start_end.put("end", endDate2021_01_18.getTimeInMillis());
+
+        Map<String, Long> UTCTimeStamps2021_01_18 = new HashMap<>();
+        Calendar fromDate2021_01_18 = Calendar.getInstance();
+        fromDate2021_01_18.set(2021,0,15,15,30,0);
+        UTCTimeStamps2021_01_18.put("from", fromDate2021_01_18.getTimeInMillis()/1000);
+        Calendar toDate2021_01_18 = Calendar.getInstance();
+        toDate2021_01_18.set(2021,0,15,22,0, 0);
+        UTCTimeStamps2021_01_18.put("to", toDate2021_01_18.getTimeInMillis()/1000);
+
+        holiday2021_01_18.add(0, holiday2021_01_18_start_end);
+        holiday2021_01_18.add(1,UTCTimeStamps2021_01_18);
+
+        tradeHolidays.put("2020_01_18", holiday2021_01_18);
+
+
+
+        List<Map<String, Long>> holiday2021_02_15 = new ArrayList<>(2);
+        Map<String, Long> holiday2021_02_15_start_end = new HashMap<>();
+        Calendar startDate2021_02_15 = Calendar.getInstance();
+        startDate2021_02_15.set(2021,1,15,15,31,0);
+        holiday2021_02_15_start_end.put("start", startDate2021_02_15.getTimeInMillis());
+        Calendar endDate2021_02_15 = Calendar.getInstance();
+        endDate2021_02_15.set(2021,1,16,15,30,59);
+        holiday2021_02_15_start_end.put("end", endDate2021_02_15.getTimeInMillis());
+
+        Map<String, Long> UTCTimeStamps2021_02_15 = new HashMap<>();
+        Calendar fromDate2021_02_15 = Calendar.getInstance();
+        fromDate2021_02_15.set(2021,1,12,15,30,0);
+        UTCTimeStamps2021_01_18.put("from", fromDate2021_01_18.getTimeInMillis()/1000);
+        Calendar toDate2021_02_15 = Calendar.getInstance();
+        toDate2021_02_15.set(2021,1,12,22,0, 0);
+        UTCTimeStamps2021_02_15.put("to", toDate2021_02_15.getTimeInMillis()/1000);
+
+        holiday2021_02_15.add(0, holiday2021_02_15_start_end);
+        holiday2021_02_15.add(1,UTCTimeStamps2021_02_15);
+
+        tradeHolidays.put("2020_02_15", holiday2021_02_15);
+
+
         System.out.println(tradeHolidays.toString());
     }
 }
