@@ -27,6 +27,7 @@ public class UserAccount {
     private String nickName;
     private String profilePic;
     private Date dateOfRegistration;
+    private String eMail;
 
     private double cash;
     private double cashInvested;

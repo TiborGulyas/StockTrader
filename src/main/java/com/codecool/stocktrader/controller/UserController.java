@@ -192,4 +192,18 @@ public class UserController {
         return userAccountRepository.findByNickName("Mr.T").getPortfolioPerformance();
     }
 
+    @GetMapping("getprofileinfo")
+    public ProfileInformation getProfileInfo(){
+        UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
+
+        return ProfileInformation.builder()
+                .profilePic(defaultUserAccount.getProfilePic())
+                .dateOfRegistration(defaultUserAccount.getDateOfRegistration())
+                .id(defaultUserAccount.getId())
+                .username(defaultUserAccount.getUsername())
+                .nickName(defaultUserAccount.getNickName())
+                .eMail(defaultUserAccount.getEMail())
+                .build();
+    }
+
 }
