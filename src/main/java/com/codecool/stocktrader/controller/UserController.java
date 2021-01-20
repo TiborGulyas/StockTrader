@@ -197,12 +197,12 @@ public class UserController {
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
 
         return ProfileInformation.builder()
-                .profilePic(defaultUserAccount.getProfilePic())
+                .profilePic(defaultUserAccount.getProfilePic_())
                 .dateOfRegistration(defaultUserAccount.getDateOfRegistration())
                 .id(defaultUserAccount.getId())
                 .username(defaultUserAccount.getUsername())
                 .nickName(defaultUserAccount.getNickName())
-                .eMail(defaultUserAccount.getEMail())
+                .eMail(defaultUserAccount.getEMail_())
                 .build();
     }
 

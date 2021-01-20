@@ -25,9 +25,10 @@ public class UserAccount {
 
     private String username;
     private String nickName;
-    private String profilePic;
+    @Column(length = 10000)
+    private String profilePic_;
     private Date dateOfRegistration;
-    private String eMail;
+    private String eMail_;
 
     private double cash;
     private double cashInvested;
