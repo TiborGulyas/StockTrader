@@ -17,10 +17,10 @@ public class StockPerformance {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne
-    private Stock stock;
-    private int stockTotalAmount;
+    private Stock stock; // maga a stock model
+    private int stockTotalAmount; // pieces
     private double averagePurchasePrice;
-    private double totalPurchaseValue;
+    private double totalPurchaseValue; //hány $-ért vetted a pieces-eket összesen
     private double stockCurrentPrice;
     private double stockCurrentValue;
     private double stockValueChange;
