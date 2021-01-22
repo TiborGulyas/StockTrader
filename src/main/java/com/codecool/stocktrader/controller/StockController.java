@@ -15,7 +15,7 @@ import java.util.*;
 @CrossOrigin
 @RequestMapping("/stock")
 public class StockController {
-
+    //komment
     @Autowired
     private StockRepository stockRepository;
 
