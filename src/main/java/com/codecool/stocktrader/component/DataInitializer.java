@@ -4,15 +4,25 @@ package com.codecool.stocktrader.component;
 import com.codecool.stocktrader.model.*;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
+import com.codecool.stocktrader.service.ApiStringProvider;
 import com.codecool.stocktrader.service.NumberRounder;
 import com.codecool.stocktrader.service.OfferTypeProvider;
+import com.codecool.stocktrader.service.PriceDataUpdater;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
 public class DataInitializer {
+
+    @Autowired
+    private ApiCall apiCall;
 
     @Autowired
     UserAccountRepository userAccountRepository;
@@ -23,11 +33,18 @@ public class DataInitializer {
     @Autowired
     private OfferTypeProvider offerTypeProvider;
 
+    @Autowired
+    private ApiStringProvider apiStringProvider;
+
+    @Autowired
+    private PriceDataUpdater priceDataUpdater;
+
     public static final Map<String, List<Map<String, Long>>> tradeHolidays = new HashMap<>();
 
-    public void initData(){
+    public void initData() throws IOException, ParseException {
         System.out.println("init persistance");
 
+        // INIT DEFAULT ACCOUNT
         UserAccount userAccount = UserAccount.builder()
                 .cash(NumberRounder.roundDouble(1000000,2))
                 .cashInvested(NumberRounder.roundDouble(1000000,2))
@@ -39,9 +56,17 @@ public class DataInitializer {
                 .build();
 
 
+        //CREATE STOCK APPLE
+        JsonObject response_AAPL = apiCall.getResult(apiStringProvider.provideAPIStringForStock("AAPL"));
+        System.out.println("stock result: "+response_AAPL);
         Stock stockApple = Stock.builder()
-                .symbol("AAPL")
-                .name("Apple")
+                .exchange(response_AAPL.getAsJsonPrimitive("exchange").getAsString())
+                .logo(response_AAPL.getAsJsonPrimitive("logo").getAsString())
+                .ipo(new SimpleDateFormat("yyyy-MM-dd").parse(response_AAPL.getAsJsonPrimitive("ipo").getAsString()))
+                .symbol(response_AAPL.getAsJsonPrimitive("ticker").getAsString())
+                .name(response_AAPL.getAsJsonPrimitive("name").getAsString())
+                .weburl(response_AAPL.getAsJsonPrimitive("weburl").getAsString())
+                .sharesOutstanding(NumberRounder.roundFloat(response_AAPL.getAsJsonPrimitive("shareOutstanding").getAsFloat(),2))
                 .build();
         stockRepository.save(stockApple);
 
@@ -84,8 +109,9 @@ public class DataInitializer {
 
          */
 
+
+        // ADD STOCK PURCHASE TO ACCOUNT -> SAVE ACCOUNT
         Stock savedAAPL = stockRepository.findBySymbol("AAPL");
-        System.out.println(userAccount.toString());
         StockPurchase stockPurchase = StockPurchase.builder()
                 .purchaseDate(Calendar.getInstance().getTime())
                 .stock(savedAAPL)
@@ -132,6 +158,7 @@ public class DataInitializer {
         */
 
 
+        // RECALL SAVED ACCOUNT FROM DB -> ADD OFFERS TO ACCOUNT -> SAVE ACCOUNT
         UserAccount savedUserAccount2 = userAccountRepository.findByNickName("Mr.T");
         Offer offerAAPL1 = Offer.builder()
                 .offerDate(Calendar.getInstance().getTime())
@@ -244,8 +271,14 @@ public class DataInitializer {
         holiday2021_02_15.add(1,UTCTimeStamps2021_02_15);
 
         tradeHolidays.put("2020_02_15", holiday2021_02_15);
-
-
         System.out.println(tradeHolidays.toString());
+
+        // FORCE RUN PRICE DATA UPDATER
+        priceDataUpdater.updateCandlesDay();
+        priceDataUpdater.updateCandlesMin1();
+        priceDataUpdater.updateCandlesMin5();
+        priceDataUpdater.updateLastPrices();
+
+
     }
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +20,11 @@ public class Stock {
     private String name;
     @Column(unique = true, nullable = false)
     private String symbol;
+    private String logo;
+    private Date ipo;
+    private float sharesOutstanding;
+    private String weburl;
+    private String exchange;
     //@OneToOne(cascade=CascadeType.ALL)
     //private LastPrice lastPrice;
     //@OneToOne(cascade=CascadeType.ALL)
