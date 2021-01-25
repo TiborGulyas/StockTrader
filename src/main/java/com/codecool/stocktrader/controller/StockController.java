@@ -61,6 +61,12 @@ public class StockController {
         return lastPriceRepository.findByStock(stock);
     }
 
+    @GetMapping("/getstock/{symbol}")
+    public Stock returnStock(@PathVariable("symbol") String symbol) {
+        Stock stock = stockRepository.findBySymbol(symbol);
+        return stock;
+    }
+
 
 
 

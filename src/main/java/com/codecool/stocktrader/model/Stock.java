@@ -25,6 +25,9 @@ public class Stock {
     private float sharesOutstanding;
     private String weburl;
     private String exchange;
+    private String country;
+    private String industry;
+    
     //@OneToOne(cascade=CascadeType.ALL)
     //private LastPrice lastPrice;
     //@OneToOne(cascade=CascadeType.ALL)

@@ -67,6 +67,8 @@ public class DataInitializer {
                 .name(response_AAPL.getAsJsonPrimitive("name").getAsString())
                 .weburl(response_AAPL.getAsJsonPrimitive("weburl").getAsString())
                 .sharesOutstanding(NumberRounder.roundFloat(response_AAPL.getAsJsonPrimitive("shareOutstanding").getAsFloat(),2))
+                .country(response_AAPL.getAsJsonPrimitive("country").getAsString())
+                .industry(response_AAPL.getAsJsonPrimitive("finnhubIndustry").getAsString())
                 .build();
         stockRepository.save(stockApple);
 
