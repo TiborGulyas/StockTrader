@@ -206,26 +206,4 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("getprofilecardinfo")
-    public ProfileCardInfo getProfileCardInfo(){
-        UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
-
-        return ProfileCardInfo.builder()
-                .username(defaultUserAccount.getUsername())
-                .nickName(defaultUserAccount.getNickName())
-                .profilePic(defaultUserAccount.getProfilePic_())
-                .dateOfRegistration(defaultUserAccount.getDateOfRegistration())
-                .cash(defaultUserAccount.getCash())
-                .cashInvested(defaultUserAccount.getCashInvested())
-                .numberOfOffers(getAllOffers().size())
-                .build();
-    }
-
-    @GetMapping("/getcash")
-    public double getCash(){
-        UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
-
-        return defaultUserAccount.getCash();
-    }
-
 }
