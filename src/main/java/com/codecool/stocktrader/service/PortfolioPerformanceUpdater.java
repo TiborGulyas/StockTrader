@@ -57,7 +57,7 @@ public class PortfolioPerformanceUpdater {
         portfolioPerformance.setInvestedCashProfit(NumberRounder.roundDouble(investedCashProfit,2));
         portfolioPerformance.setPercentageCurrentStockProfit(NumberRounder.roundDouble(percentageCurrentStockProfit,2));
         portfolioPerformance.setPercentageInvestedCashProfit(NumberRounder.roundDouble(percentageInvestedCashProfit,2));
-        userAccountRepository.save(userAccount);
+        //userAccountRepository.save(userAccount);
 
     }
 }

@@ -154,6 +154,7 @@ public class UserController {
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
         stockPerformanceListUpdater.updateStockPerformanceList(defaultUserAccount);
         portfolioPerformanceUpdater.updatePortfolioPerformance(defaultUserAccount);
+        userAccountRepository.save(defaultUserAccount);
 
         return userAccountRepository.findByNickName("Mr.T");
     }
@@ -174,6 +175,7 @@ public class UserController {
     public List<StockPerformance> getStockPerformanceList(){
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
         stockPerformanceListUpdater.updateStockPerformanceList(defaultUserAccount);
+        userAccountRepository.save(defaultUserAccount);
         return userAccountRepository.findByNickName("Mr.T").getStockPerformanceList();
     }
 
@@ -181,6 +183,7 @@ public class UserController {
     public Optional<StockPerformance> getStockPerformanceListPerStock(@PathVariable("stock") String stock){
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
         stockPerformanceListUpdater.updateStockPerformanceList(defaultUserAccount);
+        userAccountRepository.save(defaultUserAccount);
         return userAccountRepository.findByNickName("Mr.T").getStockPerformanceList().stream().filter(stockPerformance -> stockPerformance.getStock().getSymbol().equals(stock)).findFirst();
     }
 
@@ -189,6 +192,7 @@ public class UserController {
     public PortfolioPerformance getPortfolioPerformance(){
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
         portfolioPerformanceUpdater.updatePortfolioPerformance(defaultUserAccount);
+        userAccountRepository.save(defaultUserAccount);
         return userAccountRepository.findByNickName("Mr.T").getPortfolioPerformance();
     }
 

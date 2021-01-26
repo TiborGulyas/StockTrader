@@ -65,6 +65,6 @@ public class StockPerformanceListUpdater {
 
         }
         userAccount.setStockPerformanceList(stockPerformanceList);
-        userAccountRepository.save(userAccount);
+        //userAccountRepository.save(userAccount);
     }
 }
