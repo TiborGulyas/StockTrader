@@ -183,8 +183,6 @@ public class UserController {
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
         Stock stock = stockRepository.findBySymbol(stock_);
         return stockPerformanceListUpdater.getStockPerformance(defaultUserAccount, stock);
-        //userAccountRepository.save(defaultUserAccount);
-        //return userAccountRepository.findByNickName("Mr.T").getStockPerformanceList().stream().filter(stockPerformance -> stockPerformance.getStock().getSymbol().equals(stock)).findFirst();
     }
 
 
@@ -229,5 +227,18 @@ public class UserController {
     public double getCash(){
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
         return defaultUserAccount.getCash();
+    }
+
+
+    @GetMapping("getStockDataForOffer/{stock}")
+    public TradeSupportData getStockDataForOffer(@PathVariable("stock") String stock_){
+        UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
+        Stock stock = stockRepository.findBySymbol(stock_);
+
+        return TradeSupportData.builder()
+                .availableCash(defaultUserAccount.getCash())
+                .stockQuantity(stockPerformanceListUpdater.getStockPerformance(defaultUserAccount, stock).getStockTotalAmount())
+                .build();
+
     }
 }

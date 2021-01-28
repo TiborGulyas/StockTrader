@@ -15,7 +15,7 @@ public class StockPerformance {
     //@Id
     //@GeneratedValue(strategy = GenerationType.AUTO)
     //private Long id;
-    @ManyToOne
+    //@ManyToOne
     private Stock stock = null;
     private int stockTotalAmount = 0;
     private double averagePurchasePrice = 0;
