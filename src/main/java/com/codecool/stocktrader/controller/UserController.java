@@ -152,7 +152,7 @@ public class UserController {
     @GetMapping("getuseraccount")
     public UserAccount getUserAccount(){
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
-        stockPerformanceListUpdater.updateStockPerformanceList(defaultUserAccount);
+        stockPerformanceListUpdater.getStockPerformanceList(defaultUserAccount);
         portfolioPerformanceUpdater.updatePortfolioPerformance(defaultUserAccount);
         userAccountRepository.save(defaultUserAccount);
 
@@ -174,26 +174,30 @@ public class UserController {
     @GetMapping("getStockPerformanceList")
     public List<StockPerformance> getStockPerformanceList(){
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
-        stockPerformanceListUpdater.updateStockPerformanceList(defaultUserAccount);
+        return stockPerformanceListUpdater.getStockPerformanceList(defaultUserAccount);
+
+        /*
         userAccountRepository.save(defaultUserAccount);
         return userAccountRepository.findByNickName("Mr.T").getStockPerformanceList();
+         */
     }
 
-    @GetMapping("getStockPerformanceList/{stock}")
-    public Optional<StockPerformance> getStockPerformanceListPerStock(@PathVariable("stock") String stock){
+    @GetMapping("getStockPerformance/{stock}")
+    public StockPerformance getStockPerformanceListPerStock(@PathVariable("stock") String stock_){
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
-        stockPerformanceListUpdater.updateStockPerformanceList(defaultUserAccount);
-        userAccountRepository.save(defaultUserAccount);
-        return userAccountRepository.findByNickName("Mr.T").getStockPerformanceList().stream().filter(stockPerformance -> stockPerformance.getStock().getSymbol().equals(stock)).findFirst();
+        Stock stock = stockRepository.findBySymbol(stock_);
+        return stockPerformanceListUpdater.getStockPerformance(defaultUserAccount, stock);
+        //userAccountRepository.save(defaultUserAccount);
+        //return userAccountRepository.findByNickName("Mr.T").getStockPerformanceList().stream().filter(stockPerformance -> stockPerformance.getStock().getSymbol().equals(stock)).findFirst();
     }
 
 
     @GetMapping("getportfolioperformance")
     public PortfolioPerformance getPortfolioPerformance(){
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
-        portfolioPerformanceUpdater.updatePortfolioPerformance(defaultUserAccount);
-        userAccountRepository.save(defaultUserAccount);
-        return userAccountRepository.findByNickName("Mr.T").getPortfolioPerformance();
+        return portfolioPerformanceUpdater.updatePortfolioPerformance(defaultUserAccount);
+        //userAccountRepository.save(defaultUserAccount);
+        //return userAccountRepository.findByNickName("Mr.T").getPortfolioPerformance();
     }
 
     @GetMapping("getprofileinfo")

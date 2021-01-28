@@ -72,6 +72,7 @@ public class DataInitializer {
                 .build();
         stockRepository.save(stockApple);
 
+
         /*
         Stock stockTesla = Stock.builder()
                 .symbol("TSLA")
@@ -118,7 +119,7 @@ public class DataInitializer {
                 .purchaseDate(Calendar.getInstance().getTime())
                 .stock(savedAAPL)
                 .purchasePrice(NumberRounder.roundDouble(150.23,2))
-                .quantity(100)
+                .quantity(1000)
                 .userAccount(userAccount)
                 .build();
         userAccount.getPortfolio().add(stockPurchase);

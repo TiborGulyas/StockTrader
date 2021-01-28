@@ -10,23 +10,22 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
 public class StockPerformance {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    //private Long id;
     @ManyToOne
-    private Stock stock;
-    private int stockTotalAmount;
-    private double averagePurchasePrice;
-    private double totalPurchaseValue;
-    private double stockCurrentPrice;
-    private double stockCurrentValue;
-    private double stockValueChange;
+    private Stock stock = null;
+    private int stockTotalAmount = 0;
+    private double averagePurchasePrice = 0;
+    private double totalPurchaseValue = 0;
+    private double stockCurrentPrice = 0;
+    private double stockCurrentValue = 0;
+    private double stockValueChange = 0;
 
-    @JsonBackReference
-    @ToString.Exclude
-    @ManyToOne
-    private UserAccount userAccount;
+    //@JsonBackReference
+    //@ToString.Exclude
+    //@ManyToOne
+    //private UserAccount userAccount;
 }

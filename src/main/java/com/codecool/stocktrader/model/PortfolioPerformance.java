@@ -11,14 +11,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
 public class PortfolioPerformance {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    //private Long id;
 
     private double portfolioTotalValue = 0;
     private double portfolioTotalStockValue = 0;
+    private double portfolioTotalStockPurchaseValue = 0;
     private double percentageStockValue = 0;
     private double percentageCashValue = 0;
     private double currentStockProfit = 0;

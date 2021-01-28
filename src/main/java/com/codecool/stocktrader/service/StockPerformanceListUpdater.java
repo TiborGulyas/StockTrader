@@ -5,11 +5,9 @@ import com.codecool.stocktrader.repository.LastPriceRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -21,14 +19,110 @@ public class StockPerformanceListUpdater {
     @Autowired
     LastPriceRepository lastPriceRepository;
 
-    public void updateStockPerformanceList(UserAccount userAccount){
+    public List<StockPerformance> getStockPerformanceList(UserAccount userAccount){
         List<StockPurchase> portfolio = userAccount.getPortfolio();
-        List<StockPerformance> stockPerformanceList = userAccount.getStockPerformanceList();
-        stockPerformanceList.clear();
-        Set<Stock> stocksPurchased = new HashSet<>();
+        //List<StockPerformance> stockPerformanceList = new ArrayList<>();
+        //stockPerformanceList.clear();
+
+        HashMap<Stock, StockPerformance> stockPerformanceMap = new HashMap<>();
+
+        for (StockPurchase stockPurchase:portfolio) {
+            boolean isAbsent = false;
+            Stock stock = stockPurchase.getStock();
+            LastPrice lastPrice = lastPriceRepository.findByStock(stock);
+            int currentPurchaseQuantity = stockPurchase.getQuantity();
+            double currentPurchasePrice = stockPurchase.getPurchasePrice();
+            double currentPurchaseValue = NumberRounder.roundDouble(currentPurchasePrice*currentPurchaseQuantity, 2);
+
+            stockPerformanceMap.computeIfAbsent(stock, s ->
+                StockPerformance.builder()
+                        .stock(stock)
+                        .build()
+                /*
+                StockPerformance.builder()
+                    .stock(stock)
+                    //.userAccount(userAccount)
+                    .stockTotalAmount(currentPurchaseQuantity)
+                    .totalPurchaseValue(NumberRounder.roundDouble(currentPurchaseValue,2))
+                    .averagePurchasePrice(NumberRounder.roundDouble(currentPurchasePrice,2))
+                    .stockCurrentPrice(NumberRounder.roundDouble(lastPrice.getCurrentPrice(),2))
+                    .stockCurrentValue(NumberRounder.roundDouble(currentPurchaseQuantity*lastPrice.getCurrentPrice(),2))
+                    .stockValueChange(NumberRounder.roundDouble(0,4))
+                    .build()
+
+                 */
+            );
+
+            System.out.println("StockPerformance after IfAbsent:");
+            System.out.println(stockPerformanceMap.toString());
+
+            stockPerformanceMap.computeIfPresent(stock, (stockKey, stockPerformance) ->
+                StockPerformance.builder()
+                    .stock(stockPerformance.getStock())
+                    //.userAccount(stockPerformance.getUserAccount())
+                    .stockTotalAmount(stockPerformance.getStockTotalAmount()+currentPurchaseQuantity)
+                    .totalPurchaseValue(NumberRounder.roundDouble( stockPerformance.getTotalPurchaseValue()+currentPurchaseValue,2))
+                    .averagePurchasePrice(NumberRounder.roundDouble((stockPerformance.getTotalPurchaseValue()+currentPurchaseValue)/(stockPerformance.getStockTotalAmount()+currentPurchaseQuantity),2))
+                    .stockCurrentPrice(NumberRounder.roundDouble(lastPrice.getCurrentPrice(),2))
+                    .stockCurrentValue(NumberRounder.roundDouble((stockPerformance.getStockTotalAmount()+currentPurchaseQuantity)*lastPrice.getCurrentPrice(),2))
+                    .stockValueChange(NumberRounder.roundDouble(((stockPerformance.getStockTotalAmount()+currentPurchaseQuantity)*lastPrice.getCurrentPrice())/(stockPerformance.getTotalPurchaseValue()+currentPurchaseValue)-1,4))
+                    .build()
+            );
+        }
+
+        return new ArrayList<>(stockPerformanceMap.values());
+
+    }
+
+    public StockPerformance getStockPerformance(UserAccount userAccount, Stock stock){
+        List<StockPurchase> portfolio = userAccount.getPortfolio();
+        HashMap<Stock, StockPerformance> stockPerformanceMap = new HashMap<>();
+
+        stockPerformanceMap.put(stock, StockPerformance.builder()
+                //.id((long) 0)
+                .stock(stock)
+                //.userAccount(userAccount)
+                .totalPurchaseValue(0)
+                .averagePurchasePrice(0)
+                .stockCurrentPrice(0)
+                .stockCurrentValue(0)
+                .stockTotalAmount(0)
+                .stockValueChange(0)
+                .build()
+        );
+
+        for (StockPurchase stockPurchase:portfolio) {
+            LastPrice lastPrice = lastPriceRepository.findByStock(stockPurchase.getStock());
+            int currentPurchaseQuantity = stockPurchase.getQuantity();
+            double currentPurchasePrice = stockPurchase.getPurchasePrice();
+            double currentPurchaseValue = NumberRounder.roundDouble(currentPurchasePrice*currentPurchaseQuantity, 2);
+
+            stockPerformanceMap.computeIfPresent(stock, (stockKey, stockPerformance) ->
+                    StockPerformance.builder()
+                            .stock(stockPerformance.getStock())
+                            //.userAccount(stockPerformance.getUserAccount())
+                            .stockTotalAmount(stockPerformance.getStockTotalAmount()+currentPurchaseQuantity)
+                            .totalPurchaseValue(NumberRounder.roundDouble( stockPerformance.getTotalPurchaseValue()+currentPurchaseValue,2))
+                            .averagePurchasePrice(NumberRounder.roundDouble((stockPerformance.getTotalPurchaseValue()+currentPurchaseValue)/(stockPerformance.getStockTotalAmount()+currentPurchaseQuantity),2))
+                            .stockCurrentPrice(NumberRounder.roundDouble(lastPrice.getCurrentPrice(),2))
+                            .stockCurrentValue(NumberRounder.roundDouble((stockPerformance.getStockTotalAmount()+currentPurchaseQuantity)*lastPrice.getCurrentPrice(),2))
+                            .stockValueChange(NumberRounder.roundDouble(((stockPerformance.getStockTotalAmount()+currentPurchaseQuantity)*lastPrice.getCurrentPrice())/(stockPerformance.getTotalPurchaseValue()+currentPurchaseValue)-1,4))
+                            .build()
+            );
+        }
+
+        return stockPerformanceMap.get(stock);
+    }
+
+
+        /*
+        Set<Stock> stocksPurchased = portfolio.stream().map(StockPurchase::getStock).collect(Collectors.toSet());
+
         for (StockPurchase stockPurchase: portfolio) {
             stocksPurchased.add(stockPurchase.getStock());
         }
+
+
 
         for (Stock stock:stocksPurchased) {
             List<StockPurchase> stockPortfolio = portfolio.stream()
@@ -65,6 +159,7 @@ public class StockPerformanceListUpdater {
 
         }
         userAccount.setStockPerformanceList(stockPerformanceList);
-        //userAccountRepository.save(userAccount);
-    }
+        userAccountRepository.save(userAccount);
+        */
+
 }
