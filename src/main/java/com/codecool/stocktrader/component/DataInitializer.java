@@ -72,6 +72,21 @@ public class DataInitializer {
                 .build();
         stockRepository.save(stockApple);
 
+        //CREATE STOCK TESLA
+        JsonObject response_TSLA = apiCall.getResult(apiStringProvider.provideAPIStringForStock("TSLA"));
+        System.out.println("stock result: "+response_TSLA);
+        Stock stockTesla = Stock.builder()
+                .exchange(response_TSLA.getAsJsonPrimitive("exchange").getAsString())
+                .logo(response_TSLA.getAsJsonPrimitive("logo").getAsString())
+                .ipo(new SimpleDateFormat("yyyy-MM-dd").parse(response_TSLA.getAsJsonPrimitive("ipo").getAsString()))
+                .symbol(response_TSLA.getAsJsonPrimitive("ticker").getAsString())
+                .name(response_TSLA.getAsJsonPrimitive("name").getAsString())
+                .weburl(response_TSLA.getAsJsonPrimitive("weburl").getAsString())
+                .sharesOutstanding(NumberRounder.roundFloat(response_TSLA.getAsJsonPrimitive("shareOutstanding").getAsFloat(),2))
+                .country(response_TSLA.getAsJsonPrimitive("country").getAsString())
+                .industry(response_TSLA.getAsJsonPrimitive("finnhubIndustry").getAsString())
+                .build();
+        stockRepository.save(stockTesla);
 
         /*
         Stock stockTesla = Stock.builder()
@@ -133,7 +148,7 @@ public class DataInitializer {
                 .build();
         userAccount.getPortfolio().add(stockPurchase2);
 
-        /*
+
         Stock savedTSLA = stockRepository.findBySymbol("TSLA");
         StockPurchase stockPurchase3 = StockPurchase.builder()
                 .purchaseDate(Calendar.getInstance().getTime())
@@ -143,22 +158,10 @@ public class DataInitializer {
                 .userAccount(userAccount)
                 .build();
         userAccount.getPortfolio().add(stockPurchase3);
-        */
-        System.out.println(userAccount.toString());
+
+        //System.out.println(userAccount.toString());
         userAccountRepository.save(userAccount);
 
-        /*
-        UserAccount savedUserAccount = userAccountRepository.findByUsername("Mr.T");
-        StockPurchase stockPurchase2 = StockPurchase.builder()
-                .purchaseDate(Calendar.getInstance().getTime())
-                .stock(savedAAPL)
-                .purchasePrice(NumberRounder.roundDouble(170.23,2))
-                .quantity(200)
-                .userAccount(savedUserAccount)
-                .build();
-        savedUserAccount.getPortfolio().add(stockPurchase2);
-        userAccountRepository.save(savedUserAccount);
-        */
 
 
         // RECALL SAVED ACCOUNT FROM DB -> ADD OFFERS TO ACCOUNT -> SAVE ACCOUNT
@@ -185,7 +188,7 @@ public class DataInitializer {
                 .build();
         savedUserAccount2.getOffers().add(offerAAPL2);
 
-        /*
+
         Offer offerTSLA1 = Offer.builder()
                 .offerDate(Calendar.getInstance().getTime())
                 .offerType(offerTypeProvider.createOfferType("BUY"))
@@ -197,7 +200,7 @@ public class DataInitializer {
                 .build();
         savedUserAccount2.getOffers().add(offerTSLA1);
 
-         */
+
 
         userAccountRepository.save(savedUserAccount2);
 
