@@ -176,10 +176,6 @@ public class UserController {
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
         return stockPerformanceListUpdater.getStockPerformanceList(defaultUserAccount);
 
-        /*
-        userAccountRepository.save(defaultUserAccount);
-        return userAccountRepository.findByNickName("Mr.T").getStockPerformanceList();
-         */
     }
 
     @GetMapping("getStockPerformance/{stock}")

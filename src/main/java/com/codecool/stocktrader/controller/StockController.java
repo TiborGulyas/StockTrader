@@ -15,7 +15,7 @@ import java.util.*;
 @CrossOrigin
 @RequestMapping("/stock")
 public class StockController {
-    //komment
+
     @Autowired
     private StockRepository stockRepository;
 
@@ -34,23 +34,11 @@ public class StockController {
     @GetMapping("/getcandle/{symbol}/{resolution}")
     public ReactCandleContainer returnIntradayPerRes(@PathVariable("symbol") String symbol, @PathVariable("resolution") String res) {
         Stock stock = stockRepository.findBySymbol(symbol);
-
         Resolution resolution = resolutionProvider.createResolution(res);
-        //Resolution resolution5 = resolutionProvider.createResolution("5");
-        //Resolution resolutionD = resolutionProvider.createResolution("D");
-
         CandleContainer candleReturn = candleRepository.findAllByStockAndResolution(stock, resolution);
-        //CandleContainer candleReturn5 = candleRepository.findAllByStockAndResolution(stock, resolution5);
-        //CandleContainer candleReturnD = candleRepository.findAllByStockAndResolution(stock, resolutionD);
-
         ReactCandleContainer reactCandleContainer = new ReactCandleContainer();
-
         reactCandleDataConverter.convertCandleData(candleReturn, resolution, reactCandleContainer);
-        //reactCandleDataConverter.convertCandleData(candleReturn5, resolution5, reactCandleContainer);
-        //reactCandleDataConverter.convertCandleData(candleReturnD, resolutionD, reactCandleContainer);
 
-        System.out.println("react candle sent out: -----------------------");
-        System.out.println(reactCandleContainer);
         return reactCandleContainer;
 
     }
@@ -73,8 +61,6 @@ public class StockController {
         reactCandleDataConverter.convertCandleData(candleReturn5, resolution5, reactCandleContainer);
         reactCandleDataConverter.convertCandleData(candleReturnD, resolutionD, reactCandleContainer);
 
-        System.out.println("react candle sent out: -----------------------");
-        System.out.println(reactCandleContainer);
         return reactCandleContainer;
 
     }
