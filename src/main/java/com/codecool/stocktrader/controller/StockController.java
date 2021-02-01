@@ -79,6 +79,11 @@ public class StockController {
         return stock;
     }
 
+    @GetMapping("/getAllLastPrice")
+    public  List<LastPrice> returnAllLastPrice(){
+        return lastPriceRepository.findAll();
+    }
+
 
 
 
