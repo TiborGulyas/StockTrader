@@ -59,15 +59,17 @@ public class StockPerformanceListUpdater {
 
     public StockPerformance getStockPerformance(UserAccount userAccount, Stock stock){
         List<StockPurchase> portfolio = userAccount.getPortfolio();
+        LastPrice lastPrice = lastPriceRepository.findByStock(stock);
         HashMap<Stock, StockPerformance> stockPerformanceMap = new HashMap<>();
 
         stockPerformanceMap.put(stock, StockPerformance.builder()
+                .stockCurrentPrice(NumberRounder.roundDouble(lastPrice.getCurrentPrice(),2))
                 .stock(stock)
                 .build()
         );
 
         for (StockPurchase stockPurchase:portfolio) {
-            LastPrice lastPrice = lastPriceRepository.findByStock(stockPurchase.getStock());
+            //LastPrice lastPrice = lastPriceRepository.findByStock(stockPurchase.getStock());
             int currentPurchaseQuantity = stockPurchase.getQuantity();
             double currentPurchasePrice = stockPurchase.getPurchasePrice();
             double currentPurchaseValue = NumberRounder.roundDouble(currentPurchasePrice*currentPurchaseQuantity, 2);

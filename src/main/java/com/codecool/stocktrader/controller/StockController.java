@@ -7,6 +7,7 @@ import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.service.NumberRounder;
 import com.codecool.stocktrader.service.ReactCandleDataConverter;
 import com.codecool.stocktrader.service.ResolutionProvider;
+import com.codecool.stocktrader.service.StockListDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
@@ -30,6 +31,9 @@ public class StockController {
 
     @Autowired
     private ReactCandleDataConverter reactCandleDataConverter;
+
+    @Autowired
+    private StockListDataProvider stockListDataProvider;
 
     @GetMapping("/getcandle/{symbol}/{resolution}")
     public ReactCandleContainer returnIntradayPerRes(@PathVariable("symbol") String symbol, @PathVariable("resolution") String res) {
@@ -65,8 +69,6 @@ public class StockController {
 
     }
 
-
-
     @GetMapping("/getquote/{symbol}")
     public LastPrice returnCurrentPrice(@PathVariable("symbol") String symbol) {
         Stock stock = stockRepository.findBySymbol(symbol);
@@ -85,7 +87,10 @@ public class StockController {
     }
 
 
-
+    @GetMapping("/getStockListData")
+    public  List<StockListData> returnStockListData(){
+        return stockListDataProvider.provideStockListData();
+    }
 
 
 

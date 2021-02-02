@@ -12,8 +12,8 @@ public class ReactCandleDataConverter {
     public void convertCandleData(CandleContainer candleReturn, Resolution resolution, ReactCandleContainer reactCandleContainer){
 
         List<CandleData> candleDataList = candleReturn.getCandleDataList();
-        short maxCandleDataItem1min = 391;
-        short maxCandleDataItem5min = 79;
+        short maxCandleDataItem1min = 331;
+        short maxCandleDataItem5min = 71;
 
         for (CandleData candleData: candleDataList) {
             Double[] candlePrices = new Double[4];

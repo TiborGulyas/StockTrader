@@ -43,6 +43,8 @@ public class DataInitializer {
 
     public void initData() throws IOException, ParseException {
         System.out.println("init persistance");
+        ArrayList<String> symbols = new ArrayList<>(
+                Arrays.asList("AAPL", "TSLA", "GME", "AMC", "GOOG"));
 
         // INIT DEFAULT ACCOUNT
         UserAccount userAccount = UserAccount.builder()
@@ -55,7 +57,29 @@ public class DataInitializer {
                 .eMail_("gulyastibor@gmail.com")
                 .build();
 
+        //CREATE STOCKS
+        for (String symbol: symbols) {
+            JsonObject response = apiCall.getResult(apiStringProvider.provideAPIStringForStock(symbol));
+            //System.out.println("stock result: "+response_AAPL);
+            Stock stock = Stock.builder()
+                    .exchange(response.getAsJsonPrimitive("exchange").getAsString())
+                    .logo(response.getAsJsonPrimitive("logo").getAsString())
+                    .ipo(new SimpleDateFormat("yyyy-MM-dd").parse(response.getAsJsonPrimitive("ipo").getAsString()))
+                    .symbol(response.getAsJsonPrimitive("ticker").getAsString())
+                    .name(response.getAsJsonPrimitive("name").getAsString())
+                    .weburl(response.getAsJsonPrimitive("weburl").getAsString())
+                    .sharesOutstanding(NumberRounder.roundFloat(response.getAsJsonPrimitive("shareOutstanding").getAsFloat(),2))
+                    .country(response.getAsJsonPrimitive("country").getAsString())
+                    .industry(response.getAsJsonPrimitive("finnhubIndustry").getAsString())
+                    .build();
+            stockRepository.save(stock);
+        }
 
+        Stock gameStop = stockRepository.findBySymbol("GME");
+        gameStop.setLogo("https://jobapplications.net/wp-content/uploads/gamestop-logo-icon.png");
+        stockRepository.saveAndFlush(gameStop);
+
+        /*
         //CREATE STOCK APPLE
         JsonObject response_AAPL = apiCall.getResult(apiStringProvider.provideAPIStringForStock("AAPL"));
         System.out.println("stock result: "+response_AAPL);
@@ -87,7 +111,7 @@ public class DataInitializer {
                 .industry(response_TSLA.getAsJsonPrimitive("finnhubIndustry").getAsString())
                 .build();
         stockRepository.save(stockTesla);
-
+        */
         /*
         Stock stockTesla = Stock.builder()
                 .symbol("TSLA")
@@ -166,6 +190,9 @@ public class DataInitializer {
 
         // RECALL SAVED ACCOUNT FROM DB -> ADD OFFERS TO ACCOUNT -> SAVE ACCOUNT
         UserAccount savedUserAccount2 = userAccountRepository.findByNickName("Mr.T");
+        Stock stockApple = stockRepository.findBySymbol("AAPL");
+        Stock stockTesla = stockRepository.findBySymbol("TSLA");
+
         Offer offerAAPL1 = Offer.builder()
                 .offerDate(Calendar.getInstance().getTime())
                 .offerType(offerTypeProvider.createOfferType("BUY"))
