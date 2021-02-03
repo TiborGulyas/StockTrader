@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -23,6 +24,9 @@ public class StockListDataProvider {
 
     @Autowired
     ResolutionProvider resolutionProvider;
+
+    @Autowired
+    StockRepository stockRepository;
 
 
     public List<StockListData> provideStockListData(){
@@ -52,5 +56,10 @@ public class StockListDataProvider {
         return stockListAllData;
 
 
+    }
+
+    public List<String> provideStockNameList(){
+        List<Stock> allStocks = stockRepository.findAll();
+        return allStocks.stream().map(Stock::getSymbol).collect(Collectors.toList());
     }
 }

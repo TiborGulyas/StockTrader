@@ -44,6 +44,7 @@ public class UserController {
     @Autowired
     PortfolioAvailableCashForPurchaseProvider portfolioAvailableCashForPurchaseProvider;
 
+
     @PostMapping("/placeoffer/{symbol}/{offerType}/{quantity}/{price}")
     public String placeOffer(@PathVariable("symbol") String symbol, @PathVariable("offerType") String offerType, @PathVariable("quantity") int quantity, @PathVariable("price") float price){
         boolean approvalQuantity = false;
@@ -236,7 +237,7 @@ public class UserController {
         Stock stock = stockRepository.findBySymbol(stock_);
 
         return TradeSupportData.builder()
-                .availableCash(defaultUserAccount.getCash())
+                .availableCash(portfolioAvailableCashForPurchaseProvider.providePortfolioAvailableCashForPurchase(defaultUserAccount))
                 .stockQuantity(stockPerformanceListUpdater.getStockPerformance(defaultUserAccount, stock).getStockTotalAmount())
                 .build();
 

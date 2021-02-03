@@ -92,7 +92,10 @@ public class StockController {
         return stockListDataProvider.provideStockListData();
     }
 
-
+    @GetMapping("/getStockSymbols")
+    public  List<String> returnStockNameList(){
+        return stockListDataProvider.provideStockNameList();
+    }
 
 
 }

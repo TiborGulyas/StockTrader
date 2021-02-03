@@ -4,10 +4,7 @@ package com.codecool.stocktrader.component;
 import com.codecool.stocktrader.model.*;
 import com.codecool.stocktrader.repository.StockRepository;
 import com.codecool.stocktrader.repository.UserAccountRepository;
-import com.codecool.stocktrader.service.ApiStringProvider;
-import com.codecool.stocktrader.service.NumberRounder;
-import com.codecool.stocktrader.service.OfferTypeProvider;
-import com.codecool.stocktrader.service.PriceDataUpdater;
+import com.codecool.stocktrader.service.*;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -39,12 +36,15 @@ public class DataInitializer {
     @Autowired
     private PriceDataUpdater priceDataUpdater;
 
+    @Autowired
+    private StockLogoProvider stockLogoProvider;
+
     public static final Map<String, List<Map<String, Long>>> tradeHolidays = new HashMap<>();
 
     public void initData() throws IOException, ParseException {
         System.out.println("init persistance");
         ArrayList<String> symbols = new ArrayList<>(
-                Arrays.asList("AAPL", "TSLA", "GME", "AMC", "GOOG"));
+                Arrays.asList("GOOGL", "AAPL", "TSLA", "GME", "AMC"));
 
         // INIT DEFAULT ACCOUNT
         UserAccount userAccount = UserAccount.builder()
@@ -76,8 +76,26 @@ public class DataInitializer {
         }
 
         Stock gameStop = stockRepository.findBySymbol("GME");
-        gameStop.setLogo("https://jobapplications.net/wp-content/uploads/gamestop-logo-icon.png");
+        gameStop.setLogo(stockLogoProvider.provideStockLogo("gamestop.com"));
         stockRepository.saveAndFlush(gameStop);
+
+        Stock apple = stockRepository.findBySymbol("AAPL");
+        apple.setLogo(stockLogoProvider.provideStockLogo("apple.com"));
+        stockRepository.saveAndFlush(apple);
+
+        Stock tesla = stockRepository.findBySymbol("TSLA");
+        tesla.setLogo(stockLogoProvider.provideStockLogo("tesla.com"));
+        stockRepository.saveAndFlush(tesla);
+
+        Stock AMC = stockRepository.findBySymbol("AMC");
+        AMC.setLogo(stockLogoProvider.provideStockLogo("amctheatres.com"));
+        stockRepository.saveAndFlush(AMC);
+
+
+        Stock google = stockRepository.findBySymbol("GOOGL");
+        google.setLogo("https://champton.com/wp-content/uploads/alphabet-google-logo-1160x665.jpg");
+        stockRepository.saveAndFlush(google);
+
 
         /*
         //CREATE STOCK APPLE
