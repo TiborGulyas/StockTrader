@@ -17,7 +17,4 @@ public class ProfileCardInfo {
     private String nickName;
     private String profilePic;
     private Date dateOfRegistration;
-    private double cash;
-    private double cashInvested;
-    private int numberOfOffers;
 }

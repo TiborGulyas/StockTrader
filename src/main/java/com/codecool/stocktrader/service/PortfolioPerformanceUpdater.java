@@ -46,6 +46,8 @@ public class PortfolioPerformanceUpdater {
         portfolioPerformance.setInvestedCashProfit(NumberRounder.roundDouble(portfolioPerformance.getPortfolioTotalValue()-userAccount.getCashInvested(),2));
         portfolioPerformance.setPercentageCurrentStockProfit(NumberRounder.roundDouble(portfolioPerformance.getCurrentStockProfit()/portfolioPerformance.getPortfolioTotalStockPurchaseValue()*100,2));
         portfolioPerformance.setPercentageInvestedCashProfit(NumberRounder.roundDouble((portfolioPerformance.getPortfolioTotalValue()/userAccount.getCashInvested()-1)*100,2));
+        portfolioPerformance.setPortfolioFreeCashValue(NumberRounder.roundDouble(userAccount.getCash(),2));
+        portfolioPerformance.setInvestedCash(NumberRounder.roundDouble(userAccount.getCashInvested(),2));
 
         return  portfolioPerformance;
 

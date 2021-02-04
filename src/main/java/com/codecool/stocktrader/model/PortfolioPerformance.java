@@ -16,8 +16,10 @@ public class PortfolioPerformance {
     //@GeneratedValue(strategy = GenerationType.AUTO)
     //private Long id;
 
+    private double investedCash = 0;
     private double portfolioTotalValue = 0;
     private double portfolioTotalStockValue = 0;
+    private double portfolioFreeCashValue = 0;
     private double portfolioTotalStockPurchaseValue = 0;
     private double percentageStockValue = 0;
     private double percentageCashValue = 0;

@@ -221,9 +221,6 @@ public class UserController {
                 .nickName(defaultUserAccount.getNickName())
                 .profilePic(defaultUserAccount.getProfilePic_())
                 .dateOfRegistration(defaultUserAccount.getDateOfRegistration())
-                .cash(defaultUserAccount.getCash())
-                .cashInvested(defaultUserAccount.getCashInvested())
-                .numberOfOffers(getAllOffers().size())
                 .build();
     }
 
