@@ -30,6 +30,16 @@ public class OfferScanner {
     public  void matchUserOffers(){
 
         List<Offer> offerList = offerRepository.findAll();
+        matchOffers(offerList);
+
+    }
+
+    public void matchUserOffersPerUser(UserAccount userAccount){
+        List<Offer> offerList = offerRepository.findAllByUserAccount(userAccount);
+        matchOffers(offerList);
+    }
+
+    private void matchOffers(List<Offer> offerList){
         for (Offer offer: offerList) {
             UserAccount userAccount = offer.getUserAccount();
             Stock offerStock = offer.getStock();

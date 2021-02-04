@@ -45,11 +45,12 @@ public class UserController {
     PortfolioAvailableCashForPurchaseProvider portfolioAvailableCashForPurchaseProvider;
 
 
+
     @PostMapping("/placeoffer/{symbol}/{offerType}/{quantity}/{price}")
     public String placeOffer(@PathVariable("symbol") String symbol, @PathVariable("offerType") String offerType, @PathVariable("quantity") int quantity, @PathVariable("price") float price){
         boolean approvalQuantity = false;
         boolean approvalCash = false;
-        double newOfferTotalValue = price*quantity;
+        double newOfferTotalValue = NumberRounder.roundDouble(price*quantity,2);
         UserAccount userAccount = userAccountRepository.findByNickName("Mr.T");
         Stock stock = stockRepository.findBySymbol(symbol);
         OfferType offerTypeObj = offerTypeProvider.createOfferType(offerType);
@@ -80,22 +81,22 @@ public class UserController {
                     .offerType(offerTypeObj)
                     .price(NumberRounder.roundFloat(price,2))
                     .quantity(quantity)
-                    .totalValue(quantity*price)
+                    .totalValue(NumberRounder.roundDouble(quantity*price, 2))
                     .stock(stock)
                     .userAccount(userAccount)
                     .build();
             userAccount.getOffers().add(offer);
             userAccountRepository.save(userAccount);
-            offerScanner.matchUserOffers();
+            offerScanner.matchUserOffersPerUser(userAccountRepository.findByNickName("Mr.T"));
         }
-        return "OK";
+        return "Offer Accepted!";
     }
 
     @PostMapping("/replaceoffer/{id}/{symbol}/{offerType}/{quantity}/{price}")
     public String replaceOffer(@PathVariable("id") Long id, @PathVariable("symbol") String symbol, @PathVariable("offerType") String offerType, @PathVariable("quantity") int quantity, @PathVariable("price") float price){
         boolean approvalQuantity = false;
         boolean approvalCash = false;
-        double newOfferTotalValue = price*quantity;
+        double newOfferTotalValue = NumberRounder.roundDouble(price*quantity, 2);
         UserAccount userAccount = userAccountRepository.findByNickName("Mr.T");
         OfferType newOfferType = offerTypeProvider.createOfferType(offerType);
         Stock stock = stockRepository.findBySymbol(symbol);
@@ -125,29 +126,31 @@ public class UserController {
         if (approvalQuantity && approvalCash) {
             if (offer.getStock().getSymbol().equals(symbol)) {
                 offer.setOfferType(newOfferType);
-                offer.setPrice(price);
+                offer.setPrice(NumberRounder.roundDouble(price, 2));
                 offer.setQuantity(quantity);
-                offer.setTotalValue(quantity*price);
+                offer.setTotalValue(NumberRounder.roundDouble(quantity*price,2));
                 offer.setOfferDate(Calendar.getInstance().getTime());
             }
             offerRepository.save(offer);
-            offerScanner.matchUserOffers();
+            offerScanner.matchUserOffersPerUser(userAccount);
+            return "Offer Replaced!";
         }
-        return "OK";
+        return "Offer is NOT replaced!";
     }
 
 
     @DeleteMapping("/deleteoffer/{id}")
-    public void deleteOffer(@PathVariable("id") long id){
+    public String deleteOffer(@PathVariable("id") long id){
         UserAccount defaultUserAccount = userAccountRepository.findByNickName("Mr.T");
         List<Offer> userOffers = defaultUserAccount.getOffers();
         for (Offer offer: userOffers) {
             if (offer.getId() == id){
                 userOffers.remove(offer);
                 userAccountRepository.save(defaultUserAccount);
-                break;
+                return "Offer deleted!";
             }
         }
+        return "Offer is NOT deleted!";
     }
 
     @GetMapping("getuseraccount")
